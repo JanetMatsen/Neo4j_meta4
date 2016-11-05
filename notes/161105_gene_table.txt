@@ -1,0 +1,31 @@
+== Goal ===
+- get the meta-info for each gene.  What does it encode?  Who does it belong to?
+
+==  Approach ==
+- the file isolate_genomes.locus_to_organism.tsv in /gscratch/lidstrom/meta4_iso/data 
+  only has gene locus <--> organism mappings.
+    - example: 
+        NC_012970       Methylovorus glucosetrophus SIP3-4
+        NC_012972       Methylovorus glucosetrophus SIP3-4
+    - note that these are the gene loci for the organism, i.e. the gene prefixes.
+- parse with biopython.
+    - didn't work on entire file
+    - download just one file. 
+    - start with one of these:
+        T451DRAFT_scf7180000000002_quiver_dupTrim_4432.1    Methylobacter tundripaludum 21/22
+        T449DRAFT_scf7180000000004_quiver.1 Methylobacter tundripaludum 31/32
+    - first one: https://www.ncbi.nlm.nih.gov/nuccore/NZ_JMLA01000001.1
+        - says it is one contig: https://www.ncbi.nlm.nih.gov/assembly/GCF_000685925.1
+            - compared to SIP3-4 as a control: https://www.ncbi.nlm.nih.gov/assembly/GCF_000023745.1
+    - download to project dir on waffle. 
+- actually, get gene names here: 
+    - `/dacb/meta4_iso/analysis/assemble_summaries/summary_rpkm.xls`
+    - just want the first 3 columns:
+        - Methylotenera mobilis JLW8  Mmol_0001   chromosomal replication initiator protein DnaA
+    - parse via awk '{ printf("%s\t%s\t%s\n", $2, $3, $1); }' /dacb/meta4_iso/analysis/assemble_summaries/summary_rpkm.xls
+    - that wasn't working.  Use cut.
+        - worked: `cut --fields=1-3 /dacb/meta4_iso/analysis/assemble_summaries/summary_rpkm.xls | less -S`
+            - also worked: `cut -f 1-3 /dacb/meta4_iso/analysis/assemble_summaries/summary_rpkm.xls | less -S` 
+- copy over the 2500-node reduced netwok:
+    - jmatsen@waffle:~/Neo4j_meta4$ cp /gscratch/lidstrom/meta4_bins/analysis/network/network.txt ./data/
+
