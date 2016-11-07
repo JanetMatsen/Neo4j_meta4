@@ -1,4 +1,6 @@
 date, hours, description
-161105, 11, massaging data and trying to get it into neo4j
-161106, 4, trying to load simple csv subset of data into neo4j using gitHub raw link
+161107, 0.5, duplicate edges on the larger network; not resolved.
+161107, 3.5, got all of the nodes in the 20-line CSV in and did some coloring I can't automate
 160611, 3.5, got a few nodes in.  See neo4j_test.
+161106, 4, trying to load simple csv subset of data into neo4j using gitHub raw link
+161105, 11, massaging data and trying to get it into neo4j
