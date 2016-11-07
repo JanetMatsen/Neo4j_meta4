@@ -1,0 +1,4 @@
+date, hours, description
+161105, 11, massaging data and trying to get it into neo4j
+161106, 4, trying to load simple csv subset of data into neo4j using gitHub raw link
+160611, 3.5, got a few nodes in.  See neo4j_test.
