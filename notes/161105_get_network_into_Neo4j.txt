@@ -1,0 +1,6 @@
+- There is an officially approved python interface for Neo4j
+    - it's neo4j-driver.  There are similar sounding ones that aren't official.
+- https://www.safaribooksonline.com/blog/2013/07/23/using-neo4j-from-python/
+    - uses REST API
+    - 
+
