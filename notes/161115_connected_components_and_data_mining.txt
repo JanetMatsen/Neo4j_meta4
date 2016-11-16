@@ -1,0 +1,37 @@
+Links:
+-
+- social network analysis
+  - https://github.com/besil/Neo4jSNA
+- from R:,
+  - with clustering and plotting:
+    - https://neo4j.com/blog/visualize-graph-with-rneo4j/
+- podcast  http://www.se-radio.net/2013/05/episode-194-michael-hunger/
+- omics  http://kwanjeeraw.github.io/grinn/
+- other maybe useful stuff:
+  - https://github.com/maxdemarzi/neo_cc
+
+=== Testing Neo4jSNA ===
+- made a jar file:
+  - (neo4j) badger:Neo4jSNA janet$ mvn package
+- look for jar file:
+    (neo4j) badger:Neo4jSNA janet$ ls -lt target/
+    total 80
+    -rw-r--r--  1 janet  staff  39694 Nov 15 06:01 Neo4jSNA-0.0.1-SNAPSHOT.jar
+    drwxr-xr-x  3 janet  staff    102 Nov 15 06:01 maven-archiver
+    drwxr-xr-x  6 janet  staff    204 Nov 15 06:01 surefire-reports
+    drwxr-xr-x  3 janet  staff    102 Nov 15 06:01 test-classes
+    drwxr-xr-x  3 janet  staff    102 Nov 15 06:01 generated-test-sources
+    drwxr-xr-x  3 janet  staff    102 Nov 15 06:00 classes
+    drwxr-xr-x  3 janet  staff    102 Nov 15 05:59 generated-sources
+    drwxr-xr-x  3 janet  staff    102 Nov 15 05:59 maven-status
+- move the jar into my test dir
+  - (neo4j) badger:Neo4jSNA janet$ mv target/Neo4jSNA-0.0.1-SNAPSHOT.jar ../../data_mining/
+  - was supposed to go in lib:
+    - (neo4j) badger:data_mining janet$ mv Neo4jSNA-0.0.1-SNAPSHOT.jar lib/
+- make a lib folder
+  - (neo4j) badger:data_mining janet$ mkdir lib
+- import the jar
+  - http://stackoverflow.com/questions/3280353/how-to-import-a-jar-in-eclipse
+- try adding the neo4J jar
+  - downloaded neo4j-jdbc-driver-3.0.2.jar
+  - from https://github.com/neo4j-contrib/neo4j-jdbc/releases/tag/3.0.2
