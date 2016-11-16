@@ -1,5 +1,5 @@
-- when I put the whole borken network in, I saw 2x as many edges as expected
-- this doesn't happen with my 20 line CSV.  
+- when I put the whole broken network in, I saw 2x as many edges as expected
+- this doesn't happen with my 20 line CSV.
 - Also note that the browser is choking with 4k edges.
     " displaying 2?? nodes and 4??? edges
 - investigate one minimally connected pair:

@@ -1,0 +1,2 @@
+- show everything in the browser
+  - START n=node(*) RETURN n;

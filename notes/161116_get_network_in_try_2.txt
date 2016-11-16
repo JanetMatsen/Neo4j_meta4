@@ -1,0 +1,7 @@
+=== TODO ===
+- what was broken about the data?
+- ways to visualize the results?
+
+=== Merge in gene names ===
+- launched merge_gene_info.ipynb on laptop; the path says I've been running on waffle
+- 
