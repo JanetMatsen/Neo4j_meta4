@@ -1,6 +1,7 @@
 
 import org.neo4j.*;
 import com.besil.neo4jsna.*;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 public class AuthorDemo{
     public static void main(){

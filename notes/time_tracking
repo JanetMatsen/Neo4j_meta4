@@ -1,4 +1,6 @@
 date, hours, description
+161116, 4, cleaned up two-organism network data
+161116, 2, literature review
 161115, 4, try to run neo4j from Java rather than the app.  Oh, the jars!
 161107, 0.5, duplicate edges on the larger network; not resolved.
 161107, 3.5, got all of the nodes in the 20-line CSV in and did some coloring I can't automate

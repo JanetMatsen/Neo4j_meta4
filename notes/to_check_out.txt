@@ -1,0 +1,3 @@
+- java methods for social network investigations:
+  - https://neo4j.com/blog/social-networks-in-the-database-using-a-graph-database/
+- 
