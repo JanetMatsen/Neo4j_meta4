@@ -1,4 +1,4 @@
-	source	target	weight	association	target_organism	target_gene	source_organism	source_gene	source_organism_name	target_organism_name	source_gene_product	target_gene_product
+	source_locus_tag	target_locus_tag	weight	association	target_organism	target_gene	source_organism	source_gene	source_organism_name	target_organism_name	source_gene_product	target_gene_product
 417	Ga0081607_113410	Ga0081607_10311	0.07474	positive	Ga0081607	10311	Ga0081607	113410	Methylobacter-123 (UID203)	Methylobacter-123 (UID203)	hypothetical protein	hypothetical protein
 1808	Ga0081607_10311	Ga0081607_113410	0.07474	positive	Ga0081607	113410	Ga0081607	10311	Methylobacter-123 (UID203)	Methylobacter-123 (UID203)	hypothetical protein	hypothetical protein
 1641	Ga0081629_11135	Ga0081629_10266	0.07207	positive	Ga0081629	10266	Ga0081629	11135	Methylotenera mobilis-49 (UID203)	Methylotenera mobilis-49 (UID203)	hypothetical protein	type IV pilus assembly protein PilA
