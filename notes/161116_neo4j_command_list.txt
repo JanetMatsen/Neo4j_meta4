@@ -1,2 +1,12 @@
-- show everything in the browser
+- https://neo4j.com/docs/cypher-refcard/current/
+  - RETURN count(*)
+- show everything in the browser (not good for 100+ nodes...)
   - START n=node(*) RETURN n;
+
+- http://www.remwebdevelopment.com/blog/sql/some-basic-and-useful-cypher-queries-for-neo4j-201.html
+  - unique labels
+      match n
+      return distinct labels(n)
+  - Find the unique relationships that appear in the database:
+      match n-[r]-()
+      return distinct type(r)

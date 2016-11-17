@@ -1,4 +1,5 @@
 date, hours, description
+161116, 6, import newer data into Neo4j; not coloring by organism yet
 161116, 4, cleaned up two-organism network data
 161116, 2, literature review
 161115, 4, try to run neo4j from Java rather than the app.  Oh, the jars!
