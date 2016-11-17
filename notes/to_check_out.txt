@@ -1,3 +1,5 @@
 - java methods for social network investigations:
   - https://neo4j.com/blog/social-networks-in-the-database-using-a-graph-database/
-- 
+- Coursera videos
+  - https://www.coursera.org/learn/big-data-graph-analytics/lecture/X8NzZ/hands-on-basic-queries-in-neo4j-with-cypher-part-1
+- https://neo4j.com/blog/dark-side-neo4j-worst-practices/
