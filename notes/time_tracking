@@ -1,4 +1,7 @@
 date, hours, description
+161117, 4, get Neo4jSNA running in Eclipse
+161117, 2, color nodes by organism, version 2
+161117, 1, make a tsv with just the nodes in it
 161116, 6, import newer data into Neo4j; not coloring by organism yet
 161116, 4, cleaned up two-organism network data
 161116, 2, literature review

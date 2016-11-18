@@ -1,3 +1,11 @@
+*.swp
+*.aux
+*.bbl
+*.blg
+writeups/*.pdf
+*.gz
+
+
 papers/*
 *.jar
 packages/*
