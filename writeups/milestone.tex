@@ -100,28 +100,32 @@ After some digging in GitHub, I found out that Neo4jSNA was most recently update
 Even the latest 2-series version of Neo4j, 2.3.7, is not compatible with Neo4jSNA, but I was able to find the JARs for 2.3.2 via a link from the Chocolatey package manager.
 However, I now have this version of Neo4j running, and am able to send it queries and use some of the Neo4jSNA algorithms on it. 
 
+My first experiment used Neo4jSNA's label propagation \cite{fortunato2010community} algorithm using the two-organism subgraph.
+I was able to use the labels produced by this algorithm and the Neo4j browser to color and visualize the clusters.
+To my surprise, the clusters contained many disconnected nodes. 
+It is possible that label propagation is not a suitable algorithm for this problem.
+It is also possible that the graph needs to be thinned, as discussed below, before this algorithm leads to meaningful clusters. 
+
 \section{Plan for Quarter}  %A brief plan for the rest of the quarter. This plan must include the experiments you will conduct to evaluate your solution.
 
-I am still working toward being able to more fully use Neo4jSNA and other Java-based Neo4j packages.
-My first goal is to use already implemented algorithms to find community structure in my data, starting with the two-organism subgraph.
-I will use the output of those algorithms to label nodes in the browser to visualize the community structure.
-I will check to make sure that the output of the algorithms makes sense compared to my intuitions about the structure.
+The primary goal is to find sub-graphs with nodes (genes) from more than one organism. 
+My next step is to run Neo4jSNA algorithms on a reduction of the two-organism subgraph comprising only edges that connect the two organisms. 
+The graph will be further thinned based on the magnitude of partial correlations for known interactions between these species.
+For this pair, the methanol production/consumption genes in each species should have significant partial correlation. 
+The partial correlation magnitudes of these special edges will be used to further thin the two-organism graph. 
+
+I will then look for connected components and perform label propagation on this smaller network.  
+I will check to make sure that the output of the algorithms is consistent with my biological knowledge.
 
 After these tests in this simple case, I will scale up to the full data set.
 This is likely to require Amazon web services, which will require me to learn how to work on the cloud. 
 Hopefully the same jars will work as I am using on my mac once I install a Java software development kit.
 
-DAA®VE
-
 Third, if I have time, I will try to implement the community detection algorithm described in \cite{girvan2002community}.
 This algorithm works to find edges that are least central to communities in the graph and removes them.
 Such ``between'' edges can be found by looking for edges that are often used in shortest paths between pairs of nodes.
 
-\subsection{Loading data}
-\begin{verbatim}
-ABCD
-    EFGH
-\end{verbatim}
+In the end, I will present the discovered sub-graphs to my lab and we will design experiments to test the proposed functional relationships.
 
 %\bibliographystyle{te}
 
