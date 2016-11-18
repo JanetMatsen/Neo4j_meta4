@@ -1,4 +1,5 @@
 date, hours, description
+161118, 2, get Neo4jSNA running in Eclipse
 161117, 4, get Neo4jSNA running in Eclipse
 161117, 2, color nodes by organism, version 2
 161117, 1, make a tsv with just the nodes in it
