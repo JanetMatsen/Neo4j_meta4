@@ -1,0 +1,12 @@
+LOAD CSV WITH HEADERS FROM
+    'https://raw.githubusercontent.com/JanetMatsen/Neo4j_meta4/master/data/Methylobacter--Methylotenera/Methylobacter-123--Methylotenera_mobilis-49_network--some_top_genes--1268_rows.tsv'
+AS line FIELDTERMINATOR '\t'
+MERGE (g1:Gene {locus_tag:line.source_locus_tag,
+                organism:line.source_organism_name,
+                gene:line.source_gene,
+                gene_product:line.source_gene_product})
+MERGE (g2:Gene {locus_tag:line.target_locus_tag,
+                organism:line.target_organism_name,
+                gene:line.target_gene,
+                gene_product:line.target_gene_product})
+MERGE (g1) -[:X {weight:line.weight, association:line.association}]-> (g2)
