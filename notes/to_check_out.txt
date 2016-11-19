@@ -3,3 +3,7 @@
 - Coursera videos
   - https://www.coursera.org/learn/big-data-graph-analytics/lecture/X8NzZ/hands-on-basic-queries-in-neo4j-with-cypher-part-1
 - https://neo4j.com/blog/dark-side-neo4j-worst-practices/
+- keep handy:
+  - version 2.3.2. GitHub:
+    - https://github.com/neo4j/neo4j/find/30a48a04455dc1401b21625914c8113090f5a821
+  - http://stackoverflow.com/questions/3280353/how-to-import-a-jar-in-eclipse

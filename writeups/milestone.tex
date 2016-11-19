@@ -1,0 +1,138 @@
+% Homework template from https://www.overleaf.com/4061139pdprdn#/11876250/
+\documentclass[12pt]{article}
+ \usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{enumerate}
+\usepackage{url}
+
+\usepackage{graphicx} % for \includegraphics
+
+%\usepackage{natbib} % just grabbed some random bibliography package
+ 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+ 
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or lemma or whatever
+ 
+ 
+\begin{document}
+
+ 
+\title{Mining sub-graphs from gene expression partial correlations}
+\author{Janet Matsen}
+\maketitle
+
+\section{Introduction} %The description of the problem you are trying to solve
+
+My lab studies interactions between methane oxidizing microbes and other bacteria, using microbe-rich sediment at the bottom of Lake Washington as a model ecosystem.  
+Understanding how these communities oxidize methane would provide insight into a major greenhouse gas mitigation system. 
+When a scoop of lake sediment is incubated with methane as the only carbon source, three types of organisms appear: 
+(a) methane-consuming "methanotrophic" bacteria, 
+(b) methanol-consuming non-methanotrophic "methylotrophic" bacteria, and 
+(c) bacteria that can consume only multi-carbon compounds, called "heterotrophs".
+Initial steps will focus on untangling interactions between the methanotrophs, and the non-methanotrophic methylotrophs.
+Should the methods prove fruitful, they can be extended to the heterotrophs. 
+
+%Previous studies from our lab showed that certain partnerships between groups of methanotrophs and methylotrophs tend to occur. 
+%Transfer of methanol from methanotrophs to methylotrophs is known to be central to all partnerships, however, this does not explain why certain partnerships tend to occur and others do not.
+%Moreover, other metabolic interactions remain unknown.
+
+Gene expression data from 88 complex communities was previously assembled and used to produce a partial correlation matrix.
+I aim to use data mining and a graph database to identify sub-graph motifs that could elucidate the metabolic interactions between microbes in these samples.
+In particular, identification of hubs and cycles that include genes from two bacteria can be used to discover metabolic cooperation, such as nutrient exchange. 
+% Hubs are small sub-graphs that are more highly connected than the background. 
+
+%We are motivated to find patterns that illustrate metabolic cooperation between different organisms in our samples.  
+%For example, we would expect to find sub-graphs demonstrating metabolic cooperation between methane-consuming methanotrophs and methanol-consuming methylotrophs.  
+%There are many methanotrophs and many methylotrophs in our samples, and thus many possible pairs to cooperate metabolically.  
+%Searching our graph for similar motifs that include both methanotrophs and methylotrophs could uncover which pairs tend to interact, and what genes' expression are linked to these co-occurrences.  
+%These motifs are directly useful for our lab, as they lead to testable hypotheses for wet lab experiments.
+
+\section{Approach} %The description of your approach
+
+I am modeling the partial correlation network in Neo4j, the leading graph database.
+Nodes represent genes, and edges connect genes with statistically significant partial correlation with one another. 
+The nodes are labeled with the species, gene id, and protein name.
+Edges are labeled with the partial correlation, and sign (positive or negative). 
+Two gene's nodes have an edge with a large positive value when the expression of the two genes are correlated, after accounting for the expression of the rest of the genes. 
+Conversely, large negative edge weights indicate that the corresponding genes tend to be anticorrelated after controlling for the other genes' expression. 
+
+First, I will find connected components.  % connected components --> everything that's connected. 
+These will be filtered based on the most essential feature: a mixture of organism types including one methanotroph and one methylotroph.
+If these connected components are very large, I will seek to break them apart by filtering for magnitude of covariance, and look for cliques within. 
+Then I will use techniques in from social network analysis to do community detection. 
+
+I will leverage existing packages when available, and write my own algorithms when necessary. 
+
+\section{Related Work}
+%A description of related work. How does your approach compare with what has been done before. Suggestion: cite about 3 papers. Don't worry about finding *all* the existing related work. Our worry here is not the novelty of your project. The goal is for you to learn that placing your work in perspective of what has been done before is a crucial step in research. For the purpose of the class, we expect your related work to be incomplete.
+
+Graphs are a useful tool for describing how species interact \cite{borthagaray2014inferring}.
+Partial correlations are often used to determine the connections in a graph in which the edges represent influence of one node on another \cite{hero2012hub}. 
+Once a graph is in hand, we can find community structure: groups of nodes where the nodes within a group are highly connected to each other but there are fewer connections between groups \cite{girvan2002community}.
+Recent work has applied partial correlation to the ``phyllosphere'' microbiome, the collection of bacteria that live on plants \cite{agler2016microbial}.
+
+%\cite{Mateos:2011aa}
+
+
+\section{Progress to Date} %A description of what you have accomplished so far and any problems or unexpected issues that you encountered.
+
+I first prepared my data for import into Neo4j. 
+Having zero experience with Neo4j or graph databases, I first sought to load a small subset of my graph into Neo4j, and practice basic queries.
+I started with a CSV representing a two-organism sub-graph, which was lacking details like the organism and gene names.
+I was able to locate more descriptive data and merge it onto the network using Pandas in Python. 
+
+Loading this table into Neo4j required significant understanding of Cypher, Neo4j's query language.
+In short, data loading involves iterating over a data file, adding nodes and edges as you go. 
+In Neo4j, it is easier to iterate over of a CSV that is on the internet than a local file, so I put mine on GitHub. 
+Special care was required to ensure that each gene produced only one node. 
+I later discovered that I will want to extract separate CSVs representing the nodes so I use the organism name as the node type.
+
+First, I wanted to find connected components.  
+Even for these simplest of tasks, people use external packages.
+I am working to use Neo4jSNA, a social network analysis package written in Java for Neo4j\footnote{\url{https://github.com/besil/Neo4jSNA}}.
+My only prior experience with Java (and compiled languages in general) was the SimpleDB exercise, and it has been surprisingly difficult to run Neo4j from Java.
+
+Many of my initial attempts to use Neo4jSNA failed.
+After some digging in GitHub, I found out that Neo4jSNA was most recently updated for Neo4j 2.3.2, which is much older than the current version of Neo4j, which is 3.0.7. 
+Even the latest 2-series version of Neo4j, 2.3.7, is not compatible with Neo4jSNA, but I was able to find the JARs for 2.3.2 via a link from the Chocolatey package manager.
+However, I now have this version of Neo4j running, and am able to send it queries and use some of the Neo4jSNA algorithms on it. 
+
+My first experiment used Neo4jSNA's label propagation \cite{fortunato2010community} algorithm using the two-organism subgraph.
+I was able to use the labels produced by this algorithm and the Neo4j browser to color and visualize the clusters.
+To my surprise, the clusters contained many disconnected nodes. 
+It is possible that label propagation is not a suitable algorithm for this problem.
+It is also possible that the graph needs to be thinned, as discussed below, before this algorithm leads to meaningful clusters. 
+
+\section{Plan for Quarter}  %A brief plan for the rest of the quarter. This plan must include the experiments you will conduct to evaluate your solution.
+
+The primary goal is to find sub-graphs with nodes (genes) from more than one organism. 
+My next step is to run Neo4jSNA's label propagation algorithm on a reduction of the two-organism subgraph comprising only edges that connect the two organisms.
+I will also explore the other algorithms included, with particular focus on results that include nodes from multiple organisms. 
+
+I also plan to explore further thinning of the graph. 
+One approach is to use the magnitude of partial correlations for known interactions between these species.
+For the pair of organisms in my two-organism sub-graph, the methanol production/consumption genes in each species should have significant partial correlation. 
+I will use the magnitudes of these special edges to further thin the two-organism graph. 
+Then I can look for connected components and perform label propagation on this smaller network.  
+I will check to make sure that the output of the algorithms is consistent with my biological knowledge.
+
+After these tests on the two-organism sub-graph, I will scale up to the full data set.
+This is likely to require Amazon web services, which will require me to learn how to work on the cloud. 
+Hopefully the jars I am using on my mac will work in AWS once I install a Java software development kit.
+
+Third, if I have time, I will try to implement the community detection algorithm described in \cite{girvan2002community}.
+This algorithm works to find edges that are least central to communities in the graph and removes them.
+Such ``between'' edges can be found by looking for edges that are often used in shortest paths between pairs of nodes.
+
+In the end, I will present the discovered sub-graphs to my lab and we will design experiments to test the proposed functional relationships.
+
+%\bibliographystyle{te}
+
+\bibliographystyle{plain}
+\bibliography{milestone}
+ 
+ 
+\end{document}

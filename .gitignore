@@ -1,3 +1,14 @@
+data_mining_Neo4j_v2_3_2/neo4j_db/
+data_mining_Neo4j_v2_3_2/bin
+
+*.swp
+*.aux
+*.bbl
+*.blg
+writeups/*.pdf
+*.gz
+
+
 papers/*
 *.jar
 packages/*
