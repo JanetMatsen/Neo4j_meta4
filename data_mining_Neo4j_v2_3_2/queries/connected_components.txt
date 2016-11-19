@@ -12,7 +12,7 @@ WITH toFloat(line.weight) AS weight,
      line.target_gene AS target_gene,
      line.source_gene_product AS source_gene_product,
      line.target_gene_product AS target_gene_product
-WHERE abs_weight > 0.0
+WHERE abs_weight > 0.05
 MERGE (g1:Gene {locus_tag:source_locus_tag,
                 organism:source_organism_name,
                 gene:source_gene,
