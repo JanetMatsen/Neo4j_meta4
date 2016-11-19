@@ -2,6 +2,7 @@ LOAD CSV WITH HEADERS FROM
     'https://raw.githubusercontent.com/JanetMatsen/Neo4j_meta4/master/data/Methylobacter--Methylotenera/Methylobacter-123--Methylotenera_mobilis-49_network--some_top_genes--1268_rows.tsv'
 AS line FIELDTERMINATOR '\t'
 WITH line.weight AS weight,
+     toInt(line.weight) AS abs_weight,
      line.association AS association,
      line.source_locus_tag AS source_locus_tag,
      line.target_locus_tag AS target_locus_tag,
