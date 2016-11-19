@@ -9,4 +9,6 @@ MERGE (g2:Gene {locus_tag:line.target_locus_tag,
                 organism:line.target_organism_name,
                 gene:line.target_gene,
                 gene_product:line.target_gene_product})
-MERGE (g1) -[:X {weight:line.weight, association:line.association}]-> (g2)
+MERGE (g1) -[:X {weight:toFloat(line.weight),
+                 weight_abs:abs(toFloat(line.weight)),
+                 association:line.association}]-> (g2)
