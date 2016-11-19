@@ -1,12 +1,31 @@
+// Can't seem to run this line w/o error:
+// Instead, delete the whole database:
+    //  badger:data_mining_Neo4j_v2_3_2 janet$ pwd
+    //  /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2
+    //  badger:data_mining_Neo4j_v2_3_2 janet$ rm -rf neo4j_db/
+//MATCH (n) DETACH DELETE n;
+
+// Load the network
 LOAD CSV WITH HEADERS FROM
     'https://raw.githubusercontent.com/JanetMatsen/Neo4j_meta4/master/data/Methylobacter--Methylotenera/Methylobacter-123--Methylotenera_mobilis-49_network--some_top_genes--1268_rows.tsv'
 AS line FIELDTERMINATOR '\t'
-MERGE (g1:Gene {locus_tag:line.source_locus_tag,
-                organism:line.source_organism_name,
-                gene:line.source_gene,
-                gene_product:line.source_gene_product})
-MERGE (g2:Gene {locus_tag:line.target_locus_tag,
-                organism:line.target_organism_name,
-                gene:line.target_gene,
-                gene_product:line.target_gene_product})
-MERGE (g1) -[:X {weight:line.weight, association:line.association}]-> (g2)
+//WITH abs(line.weight) as abs_weight
+WITH line.weight as weight, line.association as association,
+  line.source_locus_tag AS source_locus_tag,
+  line.source_locus_tag AS target_locus_tag,
+  line.source_gene_product AS source_gene_product,
+  line.target_gene_product AS target_gene_product,
+  line.source_gene AS source_gene,
+  line.target_gene AS target_gene,
+  line.source_organism_name AS source_organism_name,
+  line.target_organism_name AS target_organism_name
+//WHERE abs_weight > 0.6
+MERGE (g1:Gene {locus_tag:source_locus_tag,
+                organism:source_organism_name,
+                gene:source_gene,
+                gene_product:source_gene_product})
+MERGE (g2:Gene {locus_tag:target_locus_tag,
+                organism:target_organism_name,
+                gene:target_gene,
+                gene_product:target_gene_product})
+MERGE (g1) -[:X {weight:weight, association:association}]-> (g2);

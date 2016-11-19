@@ -1,0 +1,44 @@
+- manually deleted lock file in my Neo4j database.
+  - error message was:
+      connect to GraphDatabaseService
+      Exception in thread "main" java.lang.RuntimeException: Error starting org.neo4j.kernel.EmbeddedGraphDatabase, /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/neo4j_db
+      	at org.neo4j.kernel.InternalAbstractGraphDatabase.run(InternalAbstractGraphDatabase.java:366)
+      	at org.neo4j.kernel.EmbeddedGraphDatabase.<init>(EmbeddedGraphDatabase.java:59)
+      	at org.neo4j.graphdb.factory.GraphDatabaseFactory$1.newDatabase(GraphDatabaseFactory.java:91)
+      	at org.neo4j.graphdb.factory.GraphDatabaseBuilder.newGraphDatabase(GraphDatabaseBuilder.java:181)
+      	at org.neo4j.graphdb.factory.GraphDatabaseFactory.newEmbeddedDatabase(GraphDatabaseFactory.java:71)
+      	at MicrobeSNA.main(MicrobeSNA.java:42)
+      Caused by: org.neo4j.kernel.lifecycle.LifecycleException: Component 'org.neo4j.kernel.StoreLockerLifecycleAdapter@365c30cc' was successfully initialized, but failed to start. Please see attached cause exception.
+      	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:513)
+      	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:115)
+      	at org.neo4j.kernel.InternalAbstractGraphDatabase.run(InternalAbstractGraphDatabase.java:343)
+      	... 5 more
+      Caused by: org.neo4j.kernel.StoreLockException: Unable to obtain lock on store lock file: neo4j_db/store_lock. Please ensure no other process is using this database, and that the directory is writable (required even for read-only access)
+      	at org.neo4j.kernel.StoreLocker.checkLock(StoreLocker.java:82)
+      	at org.neo4j.kernel.StoreLockerLifecycleAdapter.start(StoreLockerLifecycleAdapter.java:44)
+      	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:507)
+      	... 7 more
+      Caused by: java.io.IOException: Unable to lock org.neo4j.kernel.impl.nioneo.store.StoreFileChannel@4e41089d
+      	at org.neo4j.kernel.impl.nioneo.store.FileLock.wrapFileChannelLock(FileLock.java:38)
+      	at org.neo4j.kernel.impl.nioneo.store.FileLock.getOsSpecificFileLock(FileLock.java:93)
+      	at org.neo4j.kernel.DefaultFileSystemAbstraction.tryLock(DefaultFileSystemAbstraction.java:93)
+      	at org.neo4j.kernel.StoreLocker.checkLock(StoreLocker.java:74)
+      	... 9 more
+  - shell commands:
+      badger:neo4j_db janet$ head store_lock
+      badger:neo4j_db janet$ ls -l store_lock
+      -rw-r--r--  1 janet  staff  0 Nov 18 07:47 store_lock
+      badger:neo4j_db janet$ rm store_lock
+      badger:neo4j_db janet$ pwd
+      /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/neo4j_db
+- Lessons:
+  - You can't have the shell Neo4j server running and press play no the MicrobeSNA java script.
+    - the database has a lock file
+  - I might need to erase the whole database each time I want to run MicrobeSNA.java
+  - it's easiest to wipe the database with rm -r
+  - can't do my usual method of wiping the database:
+    `MATCH (n) DETACH DELETE n`
+    - error in Eclipse:
+        Exception in thread "main" Invalid input 'T': expected 'l/L' (line 15, column 13)
+        "MATCH (n) DETACH DELETE n;"
+- If you read the CSV and start re-naming attributes, you can't use line.attribute_name after that.

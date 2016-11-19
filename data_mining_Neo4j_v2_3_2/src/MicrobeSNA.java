@@ -49,14 +49,14 @@ public class MicrobeSNA {
         
         // try looping through all the nodes
         // https://neo4j.com/docs/java-reference/current/javadocs/org/neo4j/graphdb/Transaction.html
-        try ( Transaction tx = g.beginTx() )
-        {
-            for (Node node : GlobalGraphOperations.at(g).getAllNodes()) {
-                System.out.println(node.getId());
-                // Do something with the node here
-              }
-            tx.success();
-        }
+        //try ( Transaction tx = g.beginTx() )
+        //{
+        //    System.out.println("Iterate over nodes after label propagation");
+        //    for (Node node : GlobalGraphOperations.at(g).getAllNodes()) {
+        //        System.out.println(node.getPropertyKeys());
+        //      }
+        //    tx.success();
+        //}
 
 
         LabelPropagation lp = new LabelPropagation();
