@@ -52,8 +52,8 @@ public class MicrobeSNA {
         try ( Transaction tx = g.beginTx() )
         {
             for (Node node : GlobalGraphOperations.at(g).getAllNodes()) {
-                System.out.println(node.getId());
-                // Do something with the node here
+                //System.out.println(node.getPropertyKeys());
+                System.out.println("nodesey");
               }
             tx.success();
         }
@@ -100,6 +100,7 @@ public class MicrobeSNA {
         System.out.println("There are "+ totalComponents+ " different strongly connected components");
 
         // Don't forget to shutdown the database
+        System.out.println("Shutting down database");
         g.shutdown();
     }
 }

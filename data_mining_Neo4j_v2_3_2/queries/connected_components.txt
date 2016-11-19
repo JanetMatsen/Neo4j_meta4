@@ -3,6 +3,7 @@ LOAD CSV WITH HEADERS FROM
 AS line FIELDTERMINATOR '\t'
 WITH toFloat(line.weight) AS weight,
      abs(toFloat(line.weight)) AS abs_weight,
+     line.cross_species AS cross_species,
      line.association AS association,
      line.source_locus_tag AS source_locus_tag,
      line.target_locus_tag AS target_locus_tag,
@@ -23,4 +24,5 @@ MERGE (g2:Gene {locus_tag:target_locus_tag,
                 gene_product:target_gene_product})
 MERGE (g1) -[:X {weight:weight,
                  weight_abs:abs_weight,
+                 cross_species:cross_species,
                  association:association}]-> (g2)
