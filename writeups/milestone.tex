@@ -55,9 +55,9 @@ In particular, identification of hubs and cycles that include genes from two bac
 I am modeling the partial correlation network in Neo4j, the leading graph database.
 Nodes represent genes, and edges connect genes with statistically significant partial correlation with one another. 
 The nodes are labeled with the species, gene id, and protein name.
-Edges are labeled with the significance weight, and sign (positive or negative). 
-Two gene's nodes have an edge with a large positive value when those two genes tend to be highly expressed together throughout our samples. 
-Conversely, large negative edge weights indicate that the corresponding genes tend to be anticorrelated. 
+Edges are labeled with the partial correlation, and sign (positive or negative). 
+Two gene's nodes have an edge with a large positive value when the expression of the two genes are correlated, after accounting for the expression of the rest of the genes. 
+Conversely, large negative edge weights indicate that the corresponding genes tend to be anticorrelated after controlling for the other genes' expression. 
 
 First, I will find connected components.  % connected components --> everything that's connected. 
 These will be filtered based on the most essential feature: a mixture of organism types including one methanotroph and one methylotroph.
@@ -109,17 +109,19 @@ It is also possible that the graph needs to be thinned, as discussed below, befo
 \section{Plan for Quarter}  %A brief plan for the rest of the quarter. This plan must include the experiments you will conduct to evaluate your solution.
 
 The primary goal is to find sub-graphs with nodes (genes) from more than one organism. 
-My next step is to run Neo4jSNA algorithms on a reduction of the two-organism subgraph comprising only edges that connect the two organisms. 
-The graph will be further thinned based on the magnitude of partial correlations for known interactions between these species.
-For this pair, the methanol production/consumption genes in each species should have significant partial correlation. 
-The partial correlation magnitudes of these special edges will be used to further thin the two-organism graph. 
+My next step is to run Neo4jSNA's label propagation algorithm on a reduction of the two-organism subgraph comprising only edges that connect the two organisms.
+I will also explore the other algorithms included, with particular focus on results that include nodes from multiple organisms. 
 
-I will then look for connected components and perform label propagation on this smaller network.  
+I also plan to explore further thinning of the graph. 
+One approach is to use the magnitude of partial correlations for known interactions between these species.
+For the pair of organisms in my two-organism sub-graph, the methanol production/consumption genes in each species should have significant partial correlation. 
+I will use the magnitudes of these special edges to further thin the two-organism graph. 
+Then I can look for connected components and perform label propagation on this smaller network.  
 I will check to make sure that the output of the algorithms is consistent with my biological knowledge.
 
-After these tests in this simple case, I will scale up to the full data set.
+After these tests on the two-organism sub-graph, I will scale up to the full data set.
 This is likely to require Amazon web services, which will require me to learn how to work on the cloud. 
-Hopefully the same jars will work as I am using on my mac once I install a Java software development kit.
+Hopefully the jars I am using on my mac will work in AWS once I install a Java software development kit.
 
 Third, if I have time, I will try to implement the community detection algorithm described in \cite{girvan2002community}.
 This algorithm works to find edges that are least central to communities in the graph and removes them.
