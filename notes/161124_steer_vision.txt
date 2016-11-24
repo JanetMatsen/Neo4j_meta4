@@ -1,6 +1,7 @@
 Basic goals:
 - learn how to do timing in Java.
 - learn how to run my java script from the command line.
+- run on remote server. 
 
 Goals with 2-organism sub-network:
 - record the # of edges when only filtering on statistical significance cutoff
