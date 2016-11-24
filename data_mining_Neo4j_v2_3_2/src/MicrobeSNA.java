@@ -33,8 +33,11 @@ public class MicrobeSNA {
     public static void main(String[] args) throws IOException{
         String dbpath = "neo4j_db";
         // Note: don't have to run the data-building query each time. 
-        String querypath = "/Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/load_2_organism_network.txt";
-        String querystr = new String(Files.readAllBytes(Paths.get(querypath)));
+        String querypath = "/Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/load_2_organism_network--specify_cutoff.txt";
+        String querystr_raw = new String(Files.readAllBytes(Paths.get(querypath)));
+        System.out.println(querystr_raw);
+        double cutoff = 0.05;
+        String querystr = String.format(querystr_raw, cutoff);
 
         System.out.println(querystr);
 
@@ -106,8 +109,8 @@ public class MicrobeSNA {
         float estimatedTimeCC = (System.currentTimeMillis() - startTime)/1000;
         Long2LongMap components = cc.getResult();
         int totalComponents = new LongOpenHashSet( components.values() ).size();
-        System.out.println(String.format("Connected Components time (seconds): %f", estimatedTimeCC));
-        System.out.println("There are "+ totalComponents+ " different connected components");
+        System.out.println(String.format("Connected Components time (seconds): %f.  For cutoff = %f", estimatedTimeCC, cutoff));
+        System.out.println("There are "+ totalComponents+ " different connected components for cutoff " + cutoff );
 
         /*
         StronglyConnectedComponents scc = new StronglyConnectedComponents();
