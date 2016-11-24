@@ -1,10 +1,11 @@
 Basic goals:
 - learn how to do timing in Java.
-- learn how to run my java script from the command line. 
+- learn how to run my java script from the command line.
 
 Goals with 2-organism sub-network:
 - record the # of edges when only filtering on statistical significance cutoff
 - vary edge weight magnitude cutoff:
+  - run each query a few times to get avg and standard deviation. 
   - treat this as a pilot study for scaling to the whole dataset
     - can write on poster and in paper that Neo4j does not allow you to
       distribute a single query workload across servers.
