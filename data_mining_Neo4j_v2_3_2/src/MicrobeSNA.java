@@ -33,7 +33,7 @@ public class MicrobeSNA {
     public static void main(String[] args) throws IOException{
         String dbpath = "neo4j_db";
         // Note: don't have to run the data-building query each time. 
-        String querypath = "/Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/connected_components.txt";
+        String querypath = "/Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/load_2_organism_network.txt";
         String querystr = new String(Files.readAllBytes(Paths.get(querypath)));
 
         System.out.println(querystr);
@@ -99,10 +99,14 @@ public class MicrobeSNA {
         System.out.println("Check PageRank sum is 1.0: "+ res.get());
          */
 
+        
         ConnectedComponents cc = new ConnectedComponents();
+        float startTimeCC = System.currentTimeMillis();
         engine.execute(cc);
+        float estimatedTimeCC = (System.currentTimeMillis() - startTime)/1000;
         Long2LongMap components = cc.getResult();
         int totalComponents = new LongOpenHashSet( components.values() ).size();
+        System.out.println(String.format("Connected Components time (seconds): %f", estimatedTimeCC));
         System.out.println("There are "+ totalComponents+ " different connected components");
 
         /*
