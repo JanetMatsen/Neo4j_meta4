@@ -1,4 +1,5 @@
 date, hours, description
+5AM -->
 161119, 3.5, reduce network on edge magnitude and label cross-species edges
 161118, 2, get Neo4jSNA running in Eclipse
 161117, 4, get Neo4jSNA running in Eclipse

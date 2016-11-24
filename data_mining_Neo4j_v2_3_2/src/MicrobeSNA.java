@@ -59,14 +59,15 @@ public class MicrobeSNA {
         }
 
 
+        /*
         LabelPropagation lp = new LabelPropagation();
         // Starts the algorithm on the given graph g
         engine.execute(lp);
         Long2LongMap communityMap = lp.getResult();
         long totCommunities = new LongOpenHashSet( communityMap.values() ).size();
         System.out.println("There are "+totCommunities+" communities according to Label Propagation");
- /*
- Couldn't get these Modularity things to work, but perhaps not a problem!
+        */
+         /*  Couldn't get these Modularity things to work, but perhaps not a problem!
         DirectedModularity modularity = new DirectedModularity(g);
         engine.execute(modularity);
         System.out.println("The directed modularity of this network is "+modularity.getResult());
@@ -74,18 +75,23 @@ public class MicrobeSNA {
         UndirectedModularity umodularity = new UndirectedModularity(g);
         engine.execute(umodularity);
         System.out.println("The undirected modularity of this network is "+umodularity.getResult());
-*/
+        */
+        
+        /*
         TriangleCount tc = new TriangleCount();
         engine.execute(tc);
         Long2LongMap triangleCount = tc.getResult();
         Optional<Long> totalTriangles = triangleCount.values().stream().reduce( (x, y) -> x + y );
         System.out.println("There are "+totalTriangles.get()+" triangles");
+        */
 
+        /*
         PageRank pr = new PageRank(g);
         engine.execute(pr);
         Long2DoubleMap ranks = pr.getResult();
         Optional<Double> res = ranks.values().parallelStream().reduce( (x, y) -> x + y );
         System.out.println("Check PageRank sum is 1.0: "+ res.get());
+        */
 
         ConnectedComponents cc = new ConnectedComponents();
         engine.execute(cc);
@@ -93,11 +99,13 @@ public class MicrobeSNA {
         int totalComponents = new LongOpenHashSet( components.values() ).size();
         System.out.println("There are "+ totalComponents+ " different connected components");
 
+        /*
         StronglyConnectedComponents scc = new StronglyConnectedComponents();
         engine.execute(cc);
         components = scc.getResult();
         totalComponents = new LongOpenHashSet( components.values() ).size();
         System.out.println("There are "+ totalComponents+ " different strongly connected components");
+        */
 
         // Don't forget to shutdown the database
         System.out.println("Shutting down database");

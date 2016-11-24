@@ -1,0 +1,3 @@
+- Pros and Cons of using Neo4j
+- Alternatives I could have chosen
+- Skills I gained
