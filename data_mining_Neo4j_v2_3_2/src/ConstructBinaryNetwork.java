@@ -34,7 +34,7 @@ public class ConstructBinaryNetwork {
     public static void main(String[] args) throws IOException{
         // can't run for eclipse if cutoff is specified by args[0]
         //double cutoff = Double.parseDouble(args[0]);
-        double cutoff = 0.04;  //testing in Eclipse only
+        double cutoff = 0.01;  //testing in Eclipse only
 
         // Saving at: /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/databases
         String dbpath = String.format("./databases/db_binary_%f", cutoff);
@@ -50,6 +50,10 @@ public class ConstructBinaryNetwork {
 
         GraphDatabaseService g = new GraphDatabaseFactory().newEmbeddedDatabase(dbpath);
         ExecutionEngine execEngine = new ExecutionEngine(g, StringLogger.SYSTEM);
+        
+        int n_nodes_before = count_nodes(g);
+        String message_before = String.format("Number of nodes before network construction: %d", n_nodes_before);
+        System.out.println(message_before);
 
         long startTime = System.currentTimeMillis();
         ExecutionResult execResult = execEngine.execute(querystr);
@@ -60,12 +64,11 @@ public class ConstructBinaryNetwork {
 
         String results = execResult.dumpToString();
 
-        // Declare the GraphAlgoEngine on the database instance
-        GraphAlgoEngine engine = new GraphAlgoEngine(g);
-
-        int n_nodes = count_nodes(g);
-        String message = String.format("Number of nodes: %d", n_nodes);
-        System.out.println(message);
+        int n_nodes_after = count_nodes(g);
+        String message_after = String.format("Number of nodes after network construction: %d", n_nodes_after);
+        System.out.println(message_after);
+        int n_nodes_added = n_nodes_after - n_nodes_before;
+        System.out.println(String.format("Added %d nodes.", n_nodes_added));
 
         System.out.println("Shutting down database");
         g.shutdown();
