@@ -34,23 +34,15 @@ public class ConstructBinaryNetwork {
     public static void main(String[] args) throws IOException{
         // can't run for eclipse if cutoff is specified by args[0]
         //double cutoff = Double.parseDouble(args[0]);
-        double cutoff = 0.01;  //testing in Eclipse only
-
-        // Saving at: /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/databases
-        String dbpath = String.format("./databases/db_binary_%f", cutoff);
-        System.out.println("Saving database to " + dbpath);
+        double cutoff = 0.02;  //testing in Eclipse only
 
         String querypath = "/Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/load_2_organism_network--specify_cutoff.txt";
-        String querystr_raw = new String(Files.readAllBytes(Paths.get(querypath)));
-        System.out.println(querystr_raw);
-
-        String querystr = String.format(querystr_raw, cutoff);
-
-        System.out.println(querystr);
+        String dbpath = String.format("./databases/db_binary_%f", cutoff);
+        String querystr = PrepBuildQuery(cutoff, querypath, dbpath);
 
         GraphDatabaseService g = new GraphDatabaseFactory().newEmbeddedDatabase(dbpath);
         ExecutionEngine execEngine = new ExecutionEngine(g, StringLogger.SYSTEM);
-        
+
         int n_nodes_before = count_nodes(g);
         String message_before = String.format("Number of nodes before network construction: %d", n_nodes_before);
         System.out.println(message_before);
@@ -88,5 +80,18 @@ public class ConstructBinaryNetwork {
             return node_count;
         }
 
+    }
+
+    public static String PrepBuildQuery(double cutoff, String querypath, String dbpath) throws IOException{
+        // Saving at: /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/databases
+        System.out.println("Saving database to " + dbpath);
+
+        String querystr_raw = new String(Files.readAllBytes(Paths.get(querypath)));
+        System.out.println(querystr_raw);
+
+        String querystr = String.format(querystr_raw, cutoff);
+
+        System.out.println(querystr);
+        return querystr;
     }
 }
