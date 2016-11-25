@@ -1,4 +1,5 @@
 date, hours, description
+161124, 1.5, run java from Python (still work to do)
 161124, 3, print algorithm time from command line, start preparing data for whole network
 161119, 3.5, reduce network on edge magnitude and label cross-species edges
 161118, 2, get Neo4jSNA running in Eclipse

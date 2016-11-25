@@ -36,6 +36,7 @@ public class MicrobeSNA {
         String querypath = "/Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/load_2_organism_network--specify_cutoff.txt";
         String querystr_raw = new String(Files.readAllBytes(Paths.get(querypath)));
         System.out.println(querystr_raw);
+        // can't run for eclipse if cutoff is specified by args[0]
         double cutoff = Double.parseDouble(args[0]);
         String querystr = String.format(querystr_raw, cutoff);
 

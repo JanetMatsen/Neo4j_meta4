@@ -1,3 +1,5 @@
 - Pros and Cons of using Neo4j
 - Alternatives I could have chosen
+- Loading data
+  - image of a sub-network with node & edge properties. 
 - Skills I gained
