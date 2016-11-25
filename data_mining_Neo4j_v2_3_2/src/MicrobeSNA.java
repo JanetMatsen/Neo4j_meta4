@@ -107,7 +107,7 @@ public class MicrobeSNA {
         ConnectedComponents cc = new ConnectedComponents();
         float startTimeCC = System.currentTimeMillis();
         engine.execute(cc);
-        float estimatedTimeCC = (System.currentTimeMillis() - startTime)/1000;
+        float estimatedTimeCC = (System.currentTimeMillis() - startTimeCC)/1000;
         Long2LongMap components = cc.getResult();
         int totalComponents = new LongOpenHashSet( components.values() ).size();
         System.out.println(String.format("Connected Components time (seconds): %f.  For cutoff = %f", estimatedTimeCC, cutoff));
