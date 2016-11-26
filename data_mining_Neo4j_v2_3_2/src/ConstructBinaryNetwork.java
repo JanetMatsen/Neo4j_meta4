@@ -33,10 +33,10 @@ public class ConstructBinaryNetwork {
     // Note: don't have to run the data-building query each time. 
     public static void main(String[] args) throws IOException{
         // can't run for eclipse if cutoff is specified by args[0]
-        //double cutoff = Double.parseDouble(args[0]);
-        double cutoff = 0.02;  //testing in Eclipse only
+        double cutoff = Double.parseDouble(args[0]);
+        //double cutoff = 0.02;  //testing in Eclipse only
 
-        String dbpath = String.format("./databases/db_binary_%f", cutoff);
+        String dbpath = String.format("../data_mining_Neo4j_v2_3_2/databases/db_binary_%f", cutoff);
 
         GraphDatabaseService g = new GraphDatabaseFactory().newEmbeddedDatabase(dbpath);
         ExecutionEngine execEngine = new ExecutionEngine(g, StringLogger.SYSTEM);
