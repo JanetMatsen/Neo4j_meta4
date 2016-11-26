@@ -1,9 +1,5 @@
-- wipe the database at the beginning of every connected components script run.
-- write a Python script that runs my Java Jar & collects results & makes plots
 - finalize python script:
   - get time for query in addition to # of connected components.
-- wipe the database before doing the database-loading script
-  - is this going to take too long on the full network?  (Probably.)
 - run my Jar on waffle (wait until my whole network worth of data is ready)
 - get the edges labeled for whether they are cross-species
 - iterate over all the cross-species edges and record if they are part of a

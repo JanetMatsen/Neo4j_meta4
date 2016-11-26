@@ -1,5 +1,6 @@
 date, hours, description
-161126, 6:45AM - 
+161126, 9:10AM
+161126, 1.25, refactor scripts
 161125, 0.5, refactor scripts
 161125 1.66, build db from shell commands line improvements
 161124, 1.5, run java from Python (still work to do)

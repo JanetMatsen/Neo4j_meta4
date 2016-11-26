@@ -33,28 +33,22 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 
 public class ConnectedComponentsFinder {
     public static void main(String[] args) throws IOException{
-        //String dbpath = args[0] ;
-        String dbpath = "./databases/db_binary_0.050000" ;
+        String dbpath = args[0] ;
+        //String dbpath = "./databases/db_binary_0.010000" ;
         System.out.println("Finding connected components for " + dbpath);
         
-        // TODO: Parse out the cutoff from the dbpath:
-        // Better: just print the file name, and do the parsing in Python. 
-        Pattern p = Pattern.compile("db_binary_(.*)");
+        // Parse out the cutoff from the dbpath:
+        Pattern p = Pattern.compile(".*db_binary_(.*)");
         Matcher m = p.matcher(dbpath);
         m.find();
         String cutoff = m.group(1);
-        System.out.println(cutoff);
+        System.out.println("Cutoff for this database query: " + cutoff);
         
         GraphDatabaseService g = new GraphDatabaseFactory().newEmbeddedDatabase(dbpath);
         ExecutionEngine execEngine = new ExecutionEngine(g, StringLogger.SYSTEM);
 
         // Declare the GraphAlgoEngine on the database instance
         GraphAlgoEngine engine = new GraphAlgoEngine(g);
-
-        // temp test
-        int n_nodes_before = count_nodes(g);
-        String message_before = String.format("Number of nodes in network: %d", n_nodes_before);
-        System.out.println(message_before);
 
         // Find connected components
         ConnectedComponents cc = new ConnectedComponents();
@@ -79,17 +73,4 @@ public class ConnectedComponentsFinder {
         System.out.println("Shutting down database");
         g.shutdown();
     }
-    public static int count_nodes(GraphDatabaseService g){
-        // try looping through all the nodes
-        // https://neo4j.com/docs/java-reference/current/javadocs/org/neo4j/graphdb/Transaction.html
-        try ( Transaction tx = g.beginTx() )
-        {
-            int node_count = 0;
-            for (Node node : GlobalGraphOperations.at(g).getAllNodes()) {
-                //System.out.println(node.getPropertyKeys());
-                node_count += 1;
-            }
-            tx.success();
-            return node_count;
-        }
-}}
+}

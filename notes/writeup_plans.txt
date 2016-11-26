@@ -1,5 +1,7 @@
 - Pros and Cons of using Neo4j
 - Alternatives I could have chosen
 - Loading data
-  - image of a sub-network with node & edge properties. 
+  - image of a sub-network with node & edge properties.
+- connected components:
+  - not including singletons: not relevant to the biological questions
 - Skills I gained
