@@ -36,12 +36,17 @@ public class ConstructBinaryNetwork {
         //double cutoff = Double.parseDouble(args[0]);
         double cutoff = 0.02;  //testing in Eclipse only
 
-        String querypath = "/Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/load_2_organism_network--specify_cutoff.txt";
         String dbpath = String.format("./databases/db_binary_%f", cutoff);
-        String querystr = PrepBuildQuery(cutoff, querypath, dbpath);
 
         GraphDatabaseService g = new GraphDatabaseFactory().newEmbeddedDatabase(dbpath);
         ExecutionEngine execEngine = new ExecutionEngine(g, StringLogger.SYSTEM);
+
+        // First delete whatever is there before
+        String delete_query = "MATCH (n) \n OPTIONAL MATCH (n)-[r]-() \n DELETE n,r";
+        ExecutionResult execResultDelete = execEngine.execute(delete_query);
+
+        String querypath = "/Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/load_2_organism_network--specify_cutoff.txt";
+        String querystr = PrepBuildQuery(cutoff, querypath, dbpath);
 
         int n_nodes_before = count_nodes(g);
         String message_before = String.format("Number of nodes before network construction: %d", n_nodes_before);
