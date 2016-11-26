@@ -1,0 +1,69 @@
+=== ambitious goals, but not very well defined ===
+- if cutoff is too harsh, use thinned graphs to define seed clusters
+  - look for connected components in the whole graph that contain these sub-graphs
+  - may merge some of the seed clusters
+- hubs:  use page rank
+  - Wikipedia:
+  - idea: page rank restricted to cross-species edges
+    - could incorporate the strength of the edge
+ - What is the page rank winner within each connected components.
+  - functional sub-graphs:
+    - production, export, import, consumption.
+
+- If I am supposed to compare, what variables to control?
+
+=== a lot of effort into getting Neo4j to run ===
+- yes, but moving and am interacting with it through the query language (Cypher) & Java
+
+=== is Neo4j the right tool for this task? See:===
+Jing Fan, Adalbert Gerald Soosai Raj, Jignesh M. Patel: The Case
+Against Specialized Graph Analytics Engines. CIDR 2015
+  - summary:
+  - to account for the programmer-friendly APIs of graph databases, they wrote
+    Grail, a syntatic layer that communicates graph-DB-style queries to SQL
+  - questions:
+    - Giraph versus Neo4j?
+      - Giraph uses message passing.  What about Neo4j?
+      - Giraph runs on Hadoop.  More parallelizable?
+  - Conclusion:
+    - This looks interesting, and would be fun to play with if I have time
+    - Given that I have invested a lot of time getting Neo4j set up, I would
+      like to spend some time getting results with the infrastructure I've
+      configured.
+
+- This is a great idea, and I will discuss it in my writeup. ===
+
+- to discuss how exactly transitive closure is computed.  The approach
+  in class (compute binary relation T(x,y)) is inefficient; better
+  approach is to compute cluster identifiers (still possible in
+  datalog with aggregates)
+
+  - not explicitly computing transitive closure
+    - connected components:
+      - algorithm has every node start with its own unique ID
+      - at each iteration, a node's number is replaced by the lowest number of
+        its neighbors.  End up with connected components having the lowest
+        number assigned to any of its nodes
+
+- some questions remain about the necessity of transitive closure.  if
+  the goal is to find a cluster with two genes from different
+  organisms, then there is no need for TC: a simple join suffices.
+  - we aren't doing TC
+
+- more generally: why are the community detection algorithms
+  appropriate for the task at hand?
+  - moving away from fancy community detection algorithms:
+    - connected components is hardly social network analysis
+  - we believe there is underlying structure, and that is what we are trying to discover.
+
+- to discuss scalability: once the system is deployed to AWS, where
+  will the parallelism come from?  Does Neo4j parallelize?
+  - there is a parallelizable CS importer
+    - https://neo4j.com/developer/guide-import-csv/
+  - can have multiple threads:
+    - http://stackoverflow.com/questions/32560455/singleton-or-connection-pool-for-high-perfs
+  - neo4j locking is per node, and multi-threading is possible.
+    - could re-write the connected components algorithm to take advantage of
+      multithreading
+    - could compare the speed of the multi-threaded version to the original.
+  - could also make a parallel PageRank

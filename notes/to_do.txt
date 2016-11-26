@@ -1,5 +1,12 @@
+- finalize python script:
+  - get time for query in addition to # of connected components.
+- run my Jar on waffle (wait until my whole network worth of data is ready)
+- get the edges labeled for whether they are cross-species
+- iterate over all the cross-species edges and record if they are part of a
+  connected component
+
 - color by organism
   - can't color by property http://stackoverflow.com/questions/28859157/coloring-nodes-in-neo4j-depending-on-property
   - so prob need to have the node type be the organism
     - this is harder to write a general function for.
-      - might need one cypher query per organism type. 
+      - might need one cypher query per organism type.

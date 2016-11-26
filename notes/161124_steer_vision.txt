@@ -1,0 +1,33 @@
+Basic goals:
+- learn how to do timing in Java.
+- learn how to run my java script from the command line.
+- run on remote server. 
+
+Goals with 2-organism sub-network:
+- record the # of edges when only filtering on statistical significance cutoff
+- vary edge weight magnitude cutoff:
+  - run each query a few times to get avg and standard deviation.
+  - treat this as a pilot study for scaling to the whole dataset
+    - can write on poster and in paper that Neo4j does not allow you to
+      distribute a single query workload across servers.
+  - one or two plots with:
+    - # of connected components
+    - time to determine the # of connected components
+
+Transition to full network:
+- load the Pickle and see how many edges there are
+- on Waffle.
+- does it fit on my computer?
+- what are the distribution of edge weights?
+- would running the whole pipeline on Waffle be a step toward AWS?
+  - or a substitute for AWS?
+
+=== Running from command line ===
+Export a runnable jar made by:
+- right click on MicrobeSNA
+- click Export
+- select Runnable Jar File
+- currently exported to /Users/janet/Neo4j_meta4/Untitled.jar
+
+Use jar from command line:
+`java -jar Untitled.jar 0.03`

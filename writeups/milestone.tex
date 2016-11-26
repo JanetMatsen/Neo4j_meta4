@@ -55,9 +55,9 @@ In particular, identification of hubs and cycles that include genes from two bac
 I am modeling the partial correlation network in Neo4j, the leading graph database.
 Nodes represent genes, and edges connect genes with statistically significant partial correlation with one another. 
 The nodes are labeled with the species, gene id, and protein name.
-Edges are labeled with the partial correlation, and sign (positive or negative). 
-Two gene's nodes have an edge with a large positive value when the expression of the two genes are correlated, after accounting for the expression of the rest of the genes. 
-Conversely, large negative edge weights indicate that the corresponding genes tend to be anticorrelated after controlling for the other genes' expression. 
+Edges are labeled with the significance weight, and sign (positive or negative). 
+Two gene's nodes have an edge with a large positive value when those two genes tend to be highly expressed together throughout our samples. 
+Conversely, large negative edge weights indicate that the corresponding genes tend to be anticorrelated. 
 
 First, I will find connected components.  % connected components --> everything that's connected. 
 These will be filtered based on the most essential feature: a mixture of organism types including one methanotroph and one methylotroph.
@@ -100,34 +100,28 @@ After some digging in GitHub, I found out that Neo4jSNA was most recently update
 Even the latest 2-series version of Neo4j, 2.3.7, is not compatible with Neo4jSNA, but I was able to find the JARs for 2.3.2 via a link from the Chocolatey package manager.
 However, I now have this version of Neo4j running, and am able to send it queries and use some of the Neo4jSNA algorithms on it. 
 
-My first experiment used Neo4jSNA's label propagation \cite{fortunato2010community} algorithm using the two-organism subgraph.
-I was able to use the labels produced by this algorithm and the Neo4j browser to color and visualize the clusters.
-To my surprise, the clusters contained many disconnected nodes. 
-It is possible that label propagation is not a suitable algorithm for this problem.
-It is also possible that the graph needs to be thinned, as discussed below, before this algorithm leads to meaningful clusters. 
-
 \section{Plan for Quarter}  %A brief plan for the rest of the quarter. This plan must include the experiments you will conduct to evaluate your solution.
 
-The primary goal is to find sub-graphs with nodes (genes) from more than one organism. 
-My next step is to run Neo4jSNA's label propagation algorithm on a reduction of the two-organism subgraph comprising only edges that connect the two organisms.
-I will also explore the other algorithms included, with particular focus on results that include nodes from multiple organisms. 
+I am still working toward being able to more fully use Neo4jSNA and other Java-based Neo4j packages.
+My first goal is to use already implemented algorithms to find community structure in my data, starting with the two-organism subgraph.
+I will use the output of those algorithms to label nodes in the browser to visualize the community structure.
+I will check to make sure that the output of the algorithms makes sense compared to my intuitions about the structure.
 
-I also plan to explore further thinning of the graph. 
-One approach is to use the magnitude of partial correlations for known interactions between these species.
-For the pair of organisms in my two-organism sub-graph, the methanol production/consumption genes in each species should have significant partial correlation. 
-I will use the magnitudes of these special edges to further thin the two-organism graph. 
-Then I can look for connected components and perform label propagation on this smaller network.  
-I will check to make sure that the output of the algorithms is consistent with my biological knowledge.
-
-After these tests on the two-organism sub-graph, I will scale up to the full data set.
+After these tests in this simple case, I will scale up to the full data set.
 This is likely to require Amazon web services, which will require me to learn how to work on the cloud. 
-Hopefully the jars I am using on my mac will work in AWS once I install a Java software development kit.
+Hopefully the same jars will work as I am using on my mac once I install a Java software development kit.
+
+DAA®VE
 
 Third, if I have time, I will try to implement the community detection algorithm described in \cite{girvan2002community}.
 This algorithm works to find edges that are least central to communities in the graph and removes them.
 Such ``between'' edges can be found by looking for edges that are often used in shortest paths between pairs of nodes.
 
-In the end, I will present the discovered sub-graphs to my lab and we will design experiments to test the proposed functional relationships.
+\subsection{Loading data}
+\begin{verbatim}
+ABCD
+    EFGH
+\end{verbatim}
 
 %\bibliographystyle{te}
 

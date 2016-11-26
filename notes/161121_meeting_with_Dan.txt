@@ -1,0 +1,39 @@
+- my way is the right way to do it
+  - could have done it in Datalog.
+  - In Datalog, you keep the history of all the nodes.
+  - If I was doing TC, I would have N^2 rows.
+-
+
+- How many connected components when you vary edge magnitude?
+- Time performance as you vary the # of components
+- Metrics:
+  - Density of the graph: edges per node.
+-
+
+- Just using a bigger computer is not enough
+- Just having multiple clients is not parallel
+  -
+- How do you find connected components when the graph gets big?
+  - A current research challenge
+  - If you did write in a datalog like notation, then you can do the recursions
+    with a
+    - Myira.  Query that does a signle step of the iteration.  Labels of nieghbors, groupby, returns table w/ nodes & new label.
+      - Store results in a temp table.  Then outside driver code runs the query many times.
+    - Each server would get a chunk of the graph to work with
+    - At the end you need to merge them.
+
+- E(X,y) = L(x, l)
+- L'(x, min(l)) := E(x, y) L(y, l)  - Hash partition E on y,
+  - this is the parallel step.
+  - all stuff with the same y happens at the same server.
+  - E boxes he drew are servers that have either the right x or y, depending on the step you are at.
+- replace my L
+
+- Can look for whether Neo4j can run on distributed servers
+  - If it has been done, it's probably on map-reduce or spark.
+
+- Neo4j parallelization is across threads, not servers.
+- Don't switch technologies.  
+
+- pre-partition on y
+-

@@ -1,0 +1,16 @@
+What I learned earlier:
+- data.pkl has:
+  -
+- network.py:
+  -
+- network.R:
+
+
+Actually, wait on that until I talk to Dave.
+
+Shorter term goals:
+- write a Python script that runs my Java Jar & collects results & makes plots
+- run my Jar on waffle (wait until my whole network worth of data is ready)
+- get the edges labeled for whether they are cross-species
+- iterate over all the cross-species edges and record if they are part of a
+  connected component
