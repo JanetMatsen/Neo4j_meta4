@@ -27,7 +27,7 @@ public class ConstructBinaryNetwork {
         String delete_query = "MATCH (n) \n OPTIONAL MATCH (n)-[r]-() \n DELETE n,r";
         ExecutionResult execResultDelete = execEngine.execute(delete_query);
 
-        String querypath = "/Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/load_2_organism_network--specify_cutoff.txt";
+        String querypath = "../data_mining_Neo4j_v2_3_2/queries/load_2_organism_network--specify_cutoff.txt";
         String querystr = PrepBuildQuery(cutoff, querypath, dbpath);
 
         int n_nodes_before = count_nodes(g);
