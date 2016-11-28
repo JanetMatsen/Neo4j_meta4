@@ -57,13 +57,13 @@ public class ConnectedComponentsFinder {
         }
 
         // Dump to CSV by iterating over nodes
-        String csv_name = dbpath + ".csv";
-        System.out.println("Save csv to " + csv_name);
+        String tsv_name = dbpath + ".tsv";
+        System.out.println("Save csv to " + tsv_name);
 
         try{
             try ( Transaction tx = g.beginTx() )
             {
-                PrintWriter writer = new PrintWriter(csv_name, "UTF-8");
+                PrintWriter writer = new PrintWriter(tsv_name, "UTF-8");
                 //writer.print("line " );
 
                 int loop_no = 0;
@@ -75,8 +75,7 @@ public class ConnectedComponentsFinder {
                     // Print headers on first pass through data
                     if(loop_no == 1){
                         for (String key : node.getPropertyKeys()) {
-                            writer.print("\"" + key + "\"");
-                            writer.print(", ");
+                            writer.print(key + "\t");
                         }
                         writer.print("\n");
                     }
@@ -85,8 +84,7 @@ public class ConnectedComponentsFinder {
                     // Print the field if it's filled, or some type of null if empty.
                     Iterable<String> fields = node.getPropertyKeys();
                     for (String field : fields) {
-                        writer.print("\"" + node.getProperty(field) + "\"");
-                        writer.print(", ");
+                        writer.print(node.getProperty(field) + "\t");
                     }
                     writer.print("\n");
                 }
