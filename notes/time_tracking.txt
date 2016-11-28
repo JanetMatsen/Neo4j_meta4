@@ -1,5 +1,6 @@
 date, hours, description
-161128, 7:20AM - , try py2neo for iterating over nodes
+161128, 11:45 -
+161128, 4, try py2neo for iterating over nodes.  End up doing in Java.  Write CSV.
 161128, 2, jars run on Waffle. Waffle has Java 8.
 161127, 2.5, try running jars on Waffle
 161127, 0.5 + , get scripts working after Git problem
@@ -22,5 +23,4 @@ date, hours, description
 161107, 3.5, got all of the nodes in the 20-line CSV in and did some coloring I can't automate
 160611, 3.5, got a few nodes in.  See neo4j_test.
 161106, 4, trying to load simple csv subset of data into neo4j using gitHub raw link
-161105, 15:20AM - 1, massaging data and trying to get it into neo4j
-161127,,
+161105, 8, massaging data and trying to get it into neo4j

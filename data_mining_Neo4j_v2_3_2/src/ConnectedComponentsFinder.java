@@ -1,5 +1,6 @@
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,8 +20,8 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 
 public class ConnectedComponentsFinder {
     public static void main(String[] args) throws IOException{
-        //String dbpath = args[0] ;
-        String dbpath = "./databases/db_binary_0.030000" ;
+        String dbpath = args[0] ;
+        //String dbpath = "./databases/db_binary_0.030000" ;  // for testing in Eclipse only
         System.out.println("Finding connected components for " + dbpath);
 
         // Parse out the cutoff from the dbpath:
@@ -56,9 +57,15 @@ public class ConnectedComponentsFinder {
         }
 
         // Dump to CSV by iterating over nodes
+        String csv_name = dbpath + ".csv";
+        System.out.println("Save csv to " + csv_name);
+
         try{
             try ( Transaction tx = g.beginTx() )
             {
+                PrintWriter writer = new PrintWriter(csv_name, "UTF-8");
+                //writer.print("line " );
+
                 int loop_no = 0;
                 // Iterate over all nodes in the graph
                 for (Node node : GlobalGraphOperations.at(g).getAllNodes()) {
@@ -68,21 +75,22 @@ public class ConnectedComponentsFinder {
                     // Print headers on first pass through data
                     if(loop_no == 1){
                         for (String key : node.getPropertyKeys()) {
-                            System.out.print("\"" + key + "\"");
-                            System.out.print(", ");
+                            writer.print("\"" + key + "\"");
+                            writer.print(", ");
                         }
-                        System.out.print("\n");
+                        writer.print("\n");
                     }
 
                     // Iterate over [locus_tag, organism, gene, gene_product, ConnectedComponents]
                     // Print the field if it's filled, or some type of null if empty.
                     Iterable<String> fields = node.getPropertyKeys();
                     for (String field : fields) {
-                        System.out.print("\"" + node.getProperty(field) + "\"");
-                        System.out.print(", ");
+                        writer.print("\"" + node.getProperty(field) + "\"");
+                        writer.print(", ");
                     }
-                    System.out.print("\n");
+                    writer.print("\n");
                 }
+                writer.close();
                 tx.success();
             }
         }
