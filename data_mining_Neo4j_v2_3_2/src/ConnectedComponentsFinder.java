@@ -60,28 +60,22 @@ public class ConnectedComponentsFinder {
             try ( Transaction tx = g.beginTx() )
             {
                 int loop_no = 0;
-
-
+                // Iterate over all nodes in the graph
                 for (Node node : GlobalGraphOperations.at(g).getAllNodes()) {
 
                     loop_no += 1;
+                    
+                    // Print headers on first pass through data
                     if(loop_no == 1){
-                        // Doesn't seem to be printing headers.
                         for (String key : node.getPropertyKeys()) {
-                            System.out.print("\"" + node.getProperty(key) + "\"");
+                            System.out.print("\"" + key + "\"");
                             System.out.print(", ");
                         }
+                        System.out.print("\n");
                     }
-
-                    //System.out.println(node.getPropertyKeys());
-                    //System.out.println("nodesey");
-                    //System.out.println(node.getLabels());  // [Gene]
-                    //System.out.println(node.getPropertyKeys() );  // [locus_tag, organism, gene, gene_product, ConnectedComponents]
 
                     // Iterate over [locus_tag, organism, gene, gene_product, ConnectedComponents]
                     // Print the field if it's filled, or some type of null if empty.
-                    //System.out.println(node.getPropertyKeys().getClass().getName());
-                    //String[] fields = new String["a"];
                     Iterable<String> fields = node.getPropertyKeys();
                     for (String field : fields) {
                         System.out.print("\"" + node.getProperty(field) + "\"");
