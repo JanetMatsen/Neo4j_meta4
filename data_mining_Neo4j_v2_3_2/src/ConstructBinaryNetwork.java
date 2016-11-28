@@ -1,11 +1,7 @@
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Optional;
-
-import org.neo4j.*;
 import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.cypher.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -14,20 +10,6 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.kernel.impl.util.StringLogger;
 import org.neo4j.tooling.GlobalGraphOperations;
-
-import com.besil.neo4jsna.*;
-import com.besil.neo4jsna.algorithms.ConnectedComponents;
-import com.besil.neo4jsna.algorithms.LabelPropagation;
-import com.besil.neo4jsna.algorithms.PageRank;
-import com.besil.neo4jsna.algorithms.StronglyConnectedComponents;
-import com.besil.neo4jsna.algorithms.TriangleCount;
-import com.besil.neo4jsna.engine.GraphAlgoEngine;
-import com.besil.neo4jsna.measures.DirectedModularity;
-import com.besil.neo4jsna.measures.UndirectedModularity;
-
-import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
-import it.unimi.dsi.fastutil.longs.Long2LongMap;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 
 public class ConstructBinaryNetwork {
     // Note: don't have to run the data-building query each time. 
