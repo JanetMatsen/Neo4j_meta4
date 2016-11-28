@@ -1,4 +1,10 @@
 old_data_mining_Neo4j_v2_3_2/*
+._data_mining_Neo4j_v2_3_2
+._jars
+.DS_Store
+._.DS_Store
+look_at_whole_network.ipynb
+
 */databases/*
 data_mining_Neo4j_v2_3_2/neo4j_db/
 data_mining_Neo4j_v2_3_2/bin
