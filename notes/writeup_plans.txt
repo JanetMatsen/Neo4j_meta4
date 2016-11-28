@@ -1,7 +1,19 @@
 - Pros and Cons of using Neo4j
 - Alternatives I could have chosen
+  - Myria
 - Loading data
   - image of a sub-network with node & edge properties.
 - connected components:
   - not including singletons: not relevant to the biological questions
+- results:
+  - time for building network is ____(?nonlinear) with # of nodes
+    - plot time vs cutoff, time vs # of nodes
+  -
 - Skills I gained
+  - deciding what to do in which program framework:
+    - describe connected components using Cypher, Java, or Python?
+      - only do graphy stuff in Java
+      - Cypher only for loading the database and visualizing.
+      - can write Cypher queries to run from Java
+- Recommendations moving forward
+  - for large networks, use Myria (?)

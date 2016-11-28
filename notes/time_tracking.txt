@@ -1,5 +1,6 @@
 date, hours, description
-161127, 5:20AM - 
+161128, 7:20AM - , try py2neo for iterating over nodes
+161128, 2, jars run on Waffle. Waffle has Java 8.
 161127, 2.5, try running jars on Waffle
 161127, 0.5 + , get scripts working after Git problem
 161126, 2, refactor scripts + Git problem

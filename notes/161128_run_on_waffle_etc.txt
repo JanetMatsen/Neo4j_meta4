@@ -1,2 +1,6 @@
 java -jar ../jars/ConstructBinaryNetwork.jar 0.045
 java -jar ../jars/ConnectedComponentsFinder.jar ../data_mining_Neo4j_v2_3_2/databases/db_binary_0.040000/
+
+git workflow for changes on local and waffle:
+`git pull --rebase`
+Would have used :Gdiff if I had it on Waffle

@@ -1,7 +1,8 @@
+- develop understanding of Myria alternative. 
 - finalize python script:
   - get time for query in addition to # of connected components.
 - be able to ask which connected components have cross-species edges
-  - do in Python? 
+  - do in Python?
 - run my Jar on waffle (wait until my whole network worth of data is ready)
 - get the edges labeled for whether they are cross-species
 - iterate over all the cross-species edges and record if they are part of a
