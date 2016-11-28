@@ -1,0 +1,41 @@
+- notes from reorganized Git:
+  - worked on old repo:
+      badger:jupyter janet$ pwd
+      /Users/janet/old_Neo4j_meta4/jupyter
+      badger:jupyter janet$ java -jar ../jars/ConstructBinaryNetwork.jar 0.045
+  - try in new repo: worked
+      badger:jupyter[master*] janet$ ls ../data_mining_Neo4j_v2_3_2/databases/
+      db_binary_0.000000      db_binary_0.020000      db_binary_0.040000      db_binary_0.060000      db_binary_00000
+      db_binary_0.010000      db_binary_0.030000      db_binary_0.050000      db_binary_0.070000
+      badger:jupyter[master*] janet$ java -jar ../jars/ConstructBinaryNetwork.jar 0.045
+      badger:jupyter[master*] janet$ ls ../data_mining_Neo4j_v2_3_2/databases/
+      db_binary_0.000000      db_binary_0.020000      db_binary_0.040000      db_binary_0.050000      db_binary_0.070000
+      db_binary_0.010000      db_binary_0.030000      db_binary_0.045000      db_binary_0.060000      db_binary_00000
+  - try connected components in new repo:  worked.
+      badger:jupyter[master*] janet$ java -jar ../jars/ConnectedComponentsFinder.jar ../data_mining_Neo4j_v2_3_2/databases/db_binary_0.040000/
+  - try of Waffle:
+    - didn't work.  the data_mining dir was missing lots of stuff, including the databases.
+    - copied active badger dir to waffle via sshfs
+- badger is Java 1.8 and waffle is 1.7
+  - got this far downloading 1.7 for badger:
+    - http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jdk-7u80-oth-JPR
+  - might want to try downloading 1.8 on Waffle.
+
+- added Java 8 to Waffle:
+  - started here: http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html
+  - set the default Java back to 7:
+      waffle:jupyter (master) jmatsen$ sudo update-alternatives --config java
+      There are 2 choices for the alternative java (providing /usr/bin/java).
+
+        Selection    Path                                            Priority   Status
+      ------------------------------------------------------------
+        0            /usr/lib/jvm/java-8-oracle/jre/bin/java          1081      auto mode
+        1            /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java   1071      manual mode
+      * 2            /usr/lib/jvm/java-8-oracle/jre/bin/java          1081      manual mode
+
+      Press enter to keep the current choice[*], or type selection number: 1
+      update-alternatives: using /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java to provide /usr/bin/java (java) in manual mode
+      waffle:jupyter (master) jmatsen$ /usr/lib/jvm/java-8-oracle/jre/bin/java -jar ../jars/HelloWorld.jar
+      Hello, World
+  - paste above shows that my Java 8 binary worked.
+- TODO: make an alias on Waffle for Java 8.

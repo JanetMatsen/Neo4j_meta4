@@ -1,5 +1,8 @@
 date, hours, description
-161126, 9:10AM
+161127, 5:20AM - 
+161127, 2.5, try running jars on Waffle
+161127, 0.5 + , get scripts working after Git problem
+161126, 2, refactor scripts + Git problem
 161126, 1.25, refactor scripts
 161125, 0.5, refactor scripts
 161125 1.66, build db from shell commands line improvements
@@ -18,4 +21,5 @@ date, hours, description
 161107, 3.5, got all of the nodes in the 20-line CSV in and did some coloring I can't automate
 160611, 3.5, got a few nodes in.  See neo4j_test.
 161106, 4, trying to load simple csv subset of data into neo4j using gitHub raw link
-161105, 11, massaging data and trying to get it into neo4j
+161105, 15:20AM - 1, massaging data and trying to get it into neo4j
+161127,,
