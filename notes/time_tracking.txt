@@ -1,5 +1,6 @@
 date, hours, description
-161128, 11:45 -
+161201, 1, think about alternatives to Neo4j for connected components
+161128, 1.66, making tsv summarising networks; starting to plot in python
 161128, 4, try py2neo for iterating over nodes.  End up doing in Java.  Write CSV.
 161128, 2, jars run on Waffle. Waffle has Java 8.
 161127, 2.5, try running jars on Waffle

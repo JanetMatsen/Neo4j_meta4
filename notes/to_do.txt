@@ -1,15 +1,22 @@
-- develop understanding of Myria alternative. 
+- develop understanding of Myria alternative.
+- assess connectivity of network at given cutoff
+  - number of edges per node
+  - also do at the connected-components scale
 - finalize python script:
+  - Density of the graph: edges per node as f(threshold).
   - get time for query in addition to # of connected components.
-- be able to ask which connected components have cross-species edges
-  - do in Python?
 - run my Jar on waffle (wait until my whole network worth of data is ready)
-- get the edges labeled for whether they are cross-species
-- iterate over all the cross-species edges and record if they are part of a
-  connected component
+- make visualizations of sub-graphs in neo4j front end
 
 - color by organism
   - can't color by property http://stackoverflow.com/questions/28859157/coloring-nodes-in-neo4j-depending-on-property
   - so prob need to have the node type be the organism
     - this is harder to write a general function for.
       - might need one cypher query per organism type.
+
+=== Could do ===
+- page-rank within clusters
+  - What is the page rank winner within each connected component?
+
+=== Probably won't do ===
+- make a parallel PageRank

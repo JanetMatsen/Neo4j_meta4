@@ -1,14 +1,56 @@
+- Goals:
+- Approach:
+  - don't want to find TC.  Scales with N^2, the number of nodes.
+  - instead use connected components.
+    - iterative procedure that stores only N lables
+  - use Neo4j to do so
+    - can label the nodes according to their connected component
+    - found a Java package that implements the algorithm.
 - Pros and Cons of using Neo4j
+  - Pros:
+    - programmer-friendly query language, Cypher
+    - easy to visualize results in web front-end.
+  - Cons:
+    - not parallelizable
+      - Just having multiple clients is not parallel
+      - can scale separate queries across server: node-based locking
+      - can't scale a single query across servers
+      - Just using a bigger computer is not enough
 - Alternatives I could have chosen
+  - syntactic layers that make traditional RDBMSs have graph-qurey like APIs
+    - The Case Against Specialized Graph Analytics Engines. CIDR 2015
+      - summary:
+      - to account for the programmer-friendly APIs of graph databases, they wrote
+        Grail, a syntatic layer that communicates graph-DB-style queries to SQL
+      - questions:
+        - Giraph versus Neo4j?
+          - Giraph uses message passing.  What about Neo4j?
+          - Giraph runs on Hadoop.  More parallelizable?
   - Myria
+  - Datalog
+    - discuss with Shrainik.
 - Loading data
   - image of a sub-network with node & edge properties.
 - connected components:
   - not including singletons: not relevant to the biological questions
 - results:
-  - time for building network is ____(?nonlinear) with # of nodes
-    - plot time vs cutoff, time vs # of nodes
-  -
+  - when you vary the threshold,
+    - number of nodes
+      - distribution of species?
+    - time for building network is ____(?nonlinear) with # of nodes
+      - plot time vs cutoff, time vs # of nodes
+    - Density of the graph: edges per node.
+    - number and size of connected components
+      - connectivity of connected components
+  - using favorite graph, query for particular shapes
+    - these types of query are the best part of Neo4j
+- Next steps:
+  - query for particular architectures.
+    - includes biologically-intuitive genes:
+      - metabolite production, export, import, use
+        - start by export of one organism paired to import from another
+        - need to label the nodes that are import/export; requires parsing gene names or something.
+    - easy to use Cypher to query for motif shapes
 - Skills I gained
   - deciding what to do in which program framework:
     - describe connected components using Cypher, Java, or Python?

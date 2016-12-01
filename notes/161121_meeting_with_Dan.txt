@@ -17,7 +17,8 @@
   - A current research challenge
   - If you did write in a datalog like notation, then you can do the recursions
     with a
-    - Myira.  Query that does a signle step of the iteration.  Labels of nieghbors, groupby, returns table w/ nodes & new label.
+    - Myira.  Query that does a single step of the iteration.
+      - Labels of neighbors, groupby, returns table w/ nodes & new label.
       - Store results in a temp table.  Then outside driver code runs the query many times.
     - Each server would get a chunk of the graph to work with
     - At the end you need to merge them.
@@ -33,7 +34,7 @@
   - If it has been done, it's probably on map-reduce or spark.
 
 - Neo4j parallelization is across threads, not servers.
-- Don't switch technologies.  
+- Don't switch technologies.
 
 - pre-partition on y
 -
