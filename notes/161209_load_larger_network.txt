@@ -1,0 +1,37 @@
+Recap of getting network off of Waffle:
+  /home/jmatsen/Neo4j_meta4/waffle_network_dir
+  waffle:waffle_network_dir (master) jmatsen$ ls -l network.py.tsv
+  -rw-rw---- 1 dacb users 2535055666 Dec  5 11:43 network.py.tsv
+  waffle:waffle_network_dir (master) jmatsen$ wc -l network.py.tsv
+  49995001 network.py.tsv
+About the network:
+- 49 million edges.
+- not labeled with edge direction or organism type
+  waffle:waffle_network_dir (master) jmatsen$ head network.py.tsv
+  geneA   geneB   pcor
+  Ga0081614_142199        Ga0081614_142197        -0.00395096462737
+  Ga0081614_142199        Ga0081614_142198        -0.00391884521297
+  Ga0081614_142199        Ga0081614_18334 -0.0011141895928
+- different headers than my previous network:
+  source_locus_tag	target_locus_tag	weight	association	target_organism	target_gene	source_organism	source_gene	cross_species	source_organism_name	target_organism_name	source_gene_product	target_gene_product
+  Ga0081607_113410	Ga0081607_10311	0.07474	positive	Ga0081607	10311	Ga0081607	113410	False	Methylobacter-123 (UID203)	Methylobacter-123 (UID203)	hypothetical protein	hypothetical protein
+
+- the query I've been playing with so far loads a fraction of the network:
+  - in /data_mining_Neo4j_v2_3_2/queries/load_2_organism_network--specify_cutoff.txt
+    - LOAD CSV WITH HEADERS FROM
+    'https://raw.githubusercontent.com/JanetMatsen/Neo4j_meta4/master/data/Methylobacter--Methylotenera/Methylobacter-123--Methylotenera_mobilis-49_network--some_top_genes--1268_rows.tsv'
+- it's also doing so from GitHub.
+- Question:
+  - can I do logic in Neo4j while loading?
+    - make the cross-species label & other labels?
+    - not worth it.  Need to merge on gene names & such.
+- for now make it look as similar as possible to the old network file.
+  - focus on altering the new load_network Neo4j file to load from local file
+    instead of GitHub
+
+- Start a jupyter notebook to prep the info.
+  - done.  Made a 10gb text file!  Can Neo4j handle this??
+- made a copy of load_2_organism_network--specify_cutoff.txt:
+  - new file: /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/load_network--specify_cutoff.txt
+- made a copy of /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/src/ConstructBinaryNetwork.java
+  - /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/src/ConstructNetwork.java
