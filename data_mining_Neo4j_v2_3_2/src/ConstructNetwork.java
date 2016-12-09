@@ -6,6 +6,7 @@ import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.cypher.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.kernel.impl.util.StringLogger;
@@ -32,11 +33,12 @@ public class ConstructNetwork {
         System.out.println("Path to network tsv: " + db_tsv_path);
         String querystr = PrepBuildQuery(db_tsv_path, cutoff, querypath, dbpath);
 
-        // Count nodes for reporting. 
+        // Count nodes, edges for reporting.  Should be 0 b/c of deletion. 
         int n_nodes_before = count_nodes(g);
+        int n_relationships_before = count_relationships(g);
         String message_before = 
-                String.format("Number of nodes before network construction: %d", 
-                        n_nodes_before);
+                String.format("Number of nodes, relationships (edges) before network construction: %d, %d",
+                        n_nodes_before, n_relationships_before);
         System.out.println(message_before);
 
         // Track time for building the database. 
@@ -49,21 +51,24 @@ public class ConstructNetwork {
         // Print Neo4j results to console. 
         String results = execResult.dumpToString();
 
-        // Count nodes after db construction. 
+        // Count nodes, edges after db construction. 
         int n_nodes_after = count_nodes(g);
+        int n_relationships_after = count_relationships(g);
         String message_after = 
-                String.format("Number of nodes after network construction: %d", 
-                        n_nodes_after);
+                String.format("Number of nodes, relationships (edges) after network construction: %d, %d",
+                        n_nodes_after, n_relationships_after);
         System.out.println(message_after);
         int n_nodes_added = n_nodes_after - n_nodes_before;
         System.out.println(String.format("Added %d nodes.", n_nodes_added));
+        Double graph_density = 1.*n_relationships_after/n_nodes_after;
+        System.out.println(String.format("Graph density: %f", graph_density));
 
         System.out.println("Shutting down database");
         g.shutdown();
     }
 
     public static int count_nodes(GraphDatabaseService g){
-        // try looping through all the nodes
+        // looping through all the nodes to count them.
         // https://neo4j.com/docs/java-reference/current/javadocs/org/neo4j/graphdb/Transaction.html
         try ( Transaction tx = g.beginTx() )
         {
@@ -74,6 +79,22 @@ public class ConstructNetwork {
             }
             tx.success();
             return node_count;
+        }
+
+    }
+
+
+    public static int count_relationships(GraphDatabaseService g){
+        // loop through all the edges and count them.
+        try ( Transaction tx = g.beginTx() )
+        {
+            int relationship_count = 0;
+            for (Relationship relationship : GlobalGraphOperations.at(g).getAllRelationships()) {
+                //System.out.println(node.getPropertyKeys());
+                relationship_count += 1;
+            }
+            tx.success();
+            return relationship_count;
         }
 
     }
