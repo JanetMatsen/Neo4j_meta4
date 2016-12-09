@@ -28,7 +28,8 @@ public class ConstructNetwork {
         ExecutionResult execResultDelete = execEngine.execute(delete_query);
 
         String querypath = "../data_mining_Neo4j_v2_3_2/queries/load_network--specify_cutoff.txt";
-        String querystr = PrepBuildQuery(cutoff, querypath, dbpath);
+        String tsvpath = "/Users/janet/Neo4j_meta4/data/50M_network/50M_network--100.tsv";
+        String querystr = PrepBuildQuery(tsvpath, cutoff, querypath, dbpath);
 
         int n_nodes_before = count_nodes(g);
         String message_before = 
@@ -73,14 +74,14 @@ public class ConstructNetwork {
 
     }
 
-    public static String PrepBuildQuery(double cutoff, String querypath, String dbpath) throws IOException{
+    public static String PrepBuildQuery(String tsv_path, double cutoff, String querypath, String dbpath) throws IOException{
         // Saving at: /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/databases
         System.out.println("Saving database to " + dbpath);
 
         String querystr_raw = new String(Files.readAllBytes(Paths.get(querypath)));
         System.out.println(querystr_raw);
 
-        String querystr = String.format(querystr_raw, cutoff);
+        String querystr = String.format(querystr_raw, tsv_path, cutoff);
 
         System.out.println(querystr);
         return querystr;

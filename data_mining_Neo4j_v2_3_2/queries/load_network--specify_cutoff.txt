@@ -1,5 +1,5 @@
 LOAD CSV WITH HEADERS FROM
-    'https://raw.githubusercontent.com/JanetMatsen/Neo4j_meta4/master/data/50M_network/50M_network--100.tsv'
+    'file:%s'
 AS line FIELDTERMINATOR '\t'
 WITH toFloat(line.pcor) AS pcor,
      abs(toFloat(line.pcor)) AS abs_pcor,
