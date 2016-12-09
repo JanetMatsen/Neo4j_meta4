@@ -15,10 +15,10 @@ public class ConstructNetwork {
     // Note: don't have to run the data-building query each time. 
     public static void main(String[] args) throws IOException{
         // can't run for eclipse if cutoff is specified by args[0]
-        double cutoff = Double.parseDouble(args[0]);
-        //double cutoff = 0.02;  //testing in Eclipse only
+        // double cutoff = Double.parseDouble(args[0]);
+        double cutoff = 0.02;  //testing in Eclipse only
 
-        String dbpath = String.format("../data_mining_Neo4j_v2_3_2/databases/db_binary_%f", cutoff);
+        String dbpath = String.format("../data_mining_Neo4j_v2_3_2/databases/50M_%f", cutoff);
 
         GraphDatabaseService g = new GraphDatabaseFactory().newEmbeddedDatabase(dbpath);
         ExecutionEngine execEngine = new ExecutionEngine(g, StringLogger.SYSTEM);
@@ -27,11 +27,13 @@ public class ConstructNetwork {
         String delete_query = "MATCH (n) \n OPTIONAL MATCH (n)-[r]-() \n DELETE n,r";
         ExecutionResult execResultDelete = execEngine.execute(delete_query);
 
-        String querypath = "../data_mining_Neo4j_v2_3_2/queries/load_2_organism_network--specify_cutoff.txt";
+        String querypath = "../data_mining_Neo4j_v2_3_2/queries/load_network--specify_cutoff.txt";
         String querystr = PrepBuildQuery(cutoff, querypath, dbpath);
 
         int n_nodes_before = count_nodes(g);
-        String message_before = String.format("Number of nodes before network construction: %d", n_nodes_before);
+        String message_before = 
+                String.format("Number of nodes before network construction: %d", 
+                        n_nodes_before);
         System.out.println(message_before);
 
         long startTime = System.currentTimeMillis();
@@ -44,7 +46,9 @@ public class ConstructNetwork {
         String results = execResult.dumpToString();
 
         int n_nodes_after = count_nodes(g);
-        String message_after = String.format("Number of nodes after network construction: %d", n_nodes_after);
+        String message_after = 
+                String.format("Number of nodes after network construction: %d", 
+                        n_nodes_after);
         System.out.println(message_after);
         int n_nodes_added = n_nodes_after - n_nodes_before;
         System.out.println(String.format("Added %d nodes.", n_nodes_added));
