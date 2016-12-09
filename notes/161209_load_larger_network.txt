@@ -35,3 +35,4 @@ About the network:
   - new file: /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/queries/load_network--specify_cutoff.txt
 - made a copy of /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/src/ConstructBinaryNetwork.java
   - /Users/janet/Neo4j_meta4/data_mining_Neo4j_v2_3_2/src/ConstructNetwork.java
+- went back and added the missing "association" column. 

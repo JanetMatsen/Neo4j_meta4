@@ -1,15 +1,21 @@
-- Goals:
-- Approach:
+=== Goals ===
+  -
+  - emphasize focus on sub-graphs containing multiple species. 
+  - work is on GitHub:
+=== Approach ===
   - don't want to find TC.  Scales with N^2, the number of nodes.
   - instead use connected components.
     - iterative procedure that stores only N lables
   - use Neo4j to do so
     - can label the nodes according to their connected component
     - found a Java package that implements the algorithm.
-- Pros and Cons of using Neo4j
+=== Pros and Cons of using Neo4j ===
   - Pros:
     - programmer-friendly query language, Cypher
-    - easy to visualize results in web front-end.
+    - allows for shape-based pattern matching
+      - eventually something we want: chain of nodes like
+        (metabolite production organism:A) --> (metabolite export organism:A) --> (metabolite import organism:B) --> (metabolite use organism:B)
+    - easy to visualize (portions of) results in web front-end.
   - Cons:
     - not parallelizable
       - Just having multiple clients is not parallel
@@ -26,14 +32,31 @@
         - Giraph versus Neo4j?
           - Giraph uses message passing.  What about Neo4j?
           - Giraph runs on Hadoop.  More parallelizable?
+    - ?? What would I do with them?
   - Myria
+    - http://micans.org/mcl/
+    - Shrainik later provided me code to run MCL on Myria (supplemental)
+    - Myria would handle distribution of data across the database.
   - Datalog
     - discuss with Shrainik.
-- Loading data
+=== data preparation: ===
+  - had access to a 50M row tsv file with one row per pair of genes
+  - contained IDs that link the two genes and the partial correlation of the pair
+  - merge on the organism name, the gene names.
+  - add columns for association: positive or negative
+  - add column for whether edge is cross-species.
+  - merge on
+  - prepared a toy sub-network with only two organism types
+  - merge on
+=== Loading data ===
+  - data is loaded via Neo4j queries
   - image of a sub-network with node & edge properties.
+
+=== Queries ===
 - connected components:
+  - use package Neo4jSNA, Neo4j version ___.
   - not including singletons: not relevant to the biological questions
-- results:
+- results (Include an evaluation section, with graphs.):
   - when you vary the threshold,
     - number of nodes
       - distribution of species?
@@ -44,18 +67,24 @@
       - connectivity of connected components
   - using favorite graph, query for particular shapes
     - these types of query are the best part of Neo4j
-- Next steps:
+=== Next steps: ===
+  - this project was selected both to gain new database skills and to enhance research goals of the Lidstrom/Beck labs.
   - query for particular architectures.
     - includes biologically-intuitive genes:
       - metabolite production, export, import, use
         - start by export of one organism paired to import from another
         - need to label the nodes that are import/export; requires parsing gene names or something.
     - easy to use Cypher to query for motif shapes
-- Skills I gained
-  - deciding what to do in which program framework:
-    - describe connected components using Cypher, Java, or Python?
-      - only do graphy stuff in Java
-      - Cypher only for loading the database and visualizing.
-      - can write Cypher queries to run from Java
-- Recommendations moving forward
-  - for large networks, use Myria (?)
+  - Recommendations moving forward
+    - for large networks, use Myria (?)
+=== Conclusion: ===
+  - Skills I gained
+    - Neo4j
+      - query language, strengths, limitations
+    - deciding what to do in which program framework:
+      - describe connected components using Cypher, Java, or Python?
+        - only do graphy stuff in Java
+        - Cypher only for loading the database and visualizing.
+        - can write Cypher queries to run from Java
+    - using remote computation in new ways
+      - SSHed into a computer and ran the jars I developed on my desktop.
