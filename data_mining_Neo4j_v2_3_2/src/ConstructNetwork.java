@@ -16,8 +16,7 @@ public class ConstructNetwork {
     public static void main(String[] args) throws IOException{
         // can't run for eclipse if cutoff is specified by args[0]
         // double cutoff = Double.parseDouble(args[0]);
-        double cutoff = 0.02;  //testing in Eclipse only
-
+        double cutoff = 0.06;  //testing in Eclipse only
         String dbpath = String.format("../data_mining_Neo4j_v2_3_2/databases/50M_%f", cutoff);
 
         GraphDatabaseService g = new GraphDatabaseFactory().newEmbeddedDatabase(dbpath);
@@ -27,26 +26,30 @@ public class ConstructNetwork {
         String delete_query = "MATCH (n) \n OPTIONAL MATCH (n)-[r]-() \n DELETE n, r";
         ExecutionResult execResultDelete = execEngine.execute(delete_query);
 
+        // Prep Neo4j database building query. 
         String querypath = "../data_mining_Neo4j_v2_3_2/queries/load_network--specify_cutoff.txt";
-        String db_tsv_path = new java.io.File( "../data/50M_network/50M_network--100.tsv" ).getCanonicalPath();
+        String db_tsv_path = new java.io.File( "../data/50M_network/50M_network.tsv" ).getCanonicalPath();
         System.out.println("Path to network tsv: " + db_tsv_path);
         String querystr = PrepBuildQuery(db_tsv_path, cutoff, querypath, dbpath);
 
+        // Count nodes for reporting. 
         int n_nodes_before = count_nodes(g);
         String message_before = 
                 String.format("Number of nodes before network construction: %d", 
                         n_nodes_before);
         System.out.println(message_before);
 
+        // Track time for building the database. 
         long startTime = System.currentTimeMillis();
         ExecutionResult execResult = execEngine.execute(querystr);
         long estimatedTime = System.currentTimeMillis() - startTime;
         float seconds = (float) estimatedTime/1000;
         System.out.println(String.format("Network construction time (seconds): %f", seconds));
 
-
+        // Print Neo4j results to console. 
         String results = execResult.dumpToString();
 
+        // Count nodes after db construction. 
         int n_nodes_after = count_nodes(g);
         String message_after = 
                 String.format("Number of nodes after network construction: %d", 
