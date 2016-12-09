@@ -1,6 +1,6 @@
 === Goals ===
   -
-  - emphasize focus on sub-graphs containing multiple species. 
+  - emphasize focus on sub-graphs containing multiple species.
   - work is on GitHub:
 === Approach ===
   - don't want to find TC.  Scales with N^2, the number of nodes.
@@ -50,13 +50,18 @@
   - merge on
 === Loading data ===
   - data is loaded via Neo4j queries
+  - make one databasse per pcor cutoff value
+  - first wipe out the existing DB's data (paste in query: "MATCH (n) \n OPTIONAL MATCH (n)-[r]-() \n DELETE n, r")
+  - print the loading time for later analysis in Python.
   - image of a sub-network with node & edge properties.
 
 === Queries ===
 - connected components:
   - use package Neo4jSNA, Neo4j version ___.
   - not including singletons: not relevant to the biological questions
-- results (Include an evaluation section, with graphs.):
+
+=== results (Include an evaluation section, with graphs.): ===
+- note distribution of edge weights; affects interpretation of filtering.
   - when you vary the threshold,
     - number of nodes
       - distribution of species?
@@ -77,6 +82,9 @@
     - easy to use Cypher to query for motif shapes
   - Recommendations moving forward
     - for large networks, use Myria (?)
+    - don't write out a separate graph db for each cutoff
+      - instead alter the Neo4jSNA code to only touch/use nodes with abs(pcor)
+        above a particular value
 === Conclusion: ===
   - Skills I gained
     - Neo4j
