@@ -24,12 +24,13 @@ public class ConstructNetwork {
         ExecutionEngine execEngine = new ExecutionEngine(g, StringLogger.SYSTEM);
 
         // First delete whatever is there before
-        String delete_query = "MATCH (n) \n OPTIONAL MATCH (n)-[r]-() \n DELETE n,r";
+        String delete_query = "MATCH (n) \n OPTIONAL MATCH (n)-[r]-() \n DELETE n, r";
         ExecutionResult execResultDelete = execEngine.execute(delete_query);
 
         String querypath = "../data_mining_Neo4j_v2_3_2/queries/load_network--specify_cutoff.txt";
-        String tsvpath = "/Users/janet/Neo4j_meta4/data/50M_network/50M_network--100.tsv";
-        String querystr = PrepBuildQuery(tsvpath, cutoff, querypath, dbpath);
+        String db_tsv_path = new java.io.File( "../data/50M_network/50M_network--100.tsv" ).getCanonicalPath();
+        System.out.println("Path to network tsv: " + db_tsv_path);
+        String querystr = PrepBuildQuery(db_tsv_path, cutoff, querypath, dbpath);
 
         int n_nodes_before = count_nodes(g);
         String message_before = 
