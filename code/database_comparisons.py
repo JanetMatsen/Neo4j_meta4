@@ -27,7 +27,8 @@ class Database:
         self.density = None # num edges/num nodes
 
         self.db_connected_components_stdout = None
-        self.connected_components = None # TODO
+        self.connected_components = None
+        self.cc_time = None
 
         self.create_or_load_db()
         self.find_connected_components()
@@ -121,13 +122,19 @@ class Database:
         results = self.db_connected_components_stdout
         result_sentence = re.findall(r'There are \d+ different connected '
                                      'components for cutoff \d+.\d+', results)[0]
-        print(result_sentence)
         cc = re.findall('(\d+) different', result_sentence)
         assert len(cc) == 1, 'expected one count of connected components; ' \
                              'got {}'.format(cc)
         cc = cc[0]
         cc = int(cc)
         self.connected_components = cc
+
+        print(results)
+        time = re.search(r'Connected Components time \(seconds\): ([\d]+)',
+                          results)
+        assert len(time.groups()) == 1, 'needed to match one time; found {}'.format(time.groups())
+        time = float(time.groups()[0])
+        self.cc_time = time
 
     def load_existing_db(self):
         print('Loading {}'.format(self.db_path))
@@ -153,6 +160,7 @@ class Database:
         info['edges'] = self.edges
         info['density'] = self.density
         info['connected components'] = self.connected_components
+        info['connected components time'] = self.cc_time
         info['db path'] = self.db_path
         return pd.DataFrame({k:[v] for k, v in info.items()})
 
