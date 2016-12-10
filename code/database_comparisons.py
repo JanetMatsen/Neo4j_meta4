@@ -1,6 +1,7 @@
 import re
 import subprocess
 import os
+import matplotlib.pyplot as plt
 
 import pandas as pd
 
@@ -95,6 +96,15 @@ class Database:
             print(density)
             self.density = density[0]
 
+        # find db construction time
+        seconds = re.findall('Network construction time \(seconds\): (\d+)',
+                             stdout)
+        assert len(seconds) == 1, 'expected one match for seconds; ' \
+                             'got {}'.format(seconds)
+        seconds = seconds[0]
+        seconds = float(seconds)
+        self.construction_seconds = seconds
+
         self.nodes = int(nodes)
         self.edges = int(edges) # aka relationships
 
@@ -182,6 +192,7 @@ class Database:
         info['connected components'] = self.connected_components
         info['connected components time'] = self.cc_time
         info['db path'] = self.db_path
+        info['construction seconds'] = self.construction_seconds
         info['previously_generated'] = self.previously_generated
         return pd.DataFrame({k:[v] for k, v in info.items()})
 
@@ -190,24 +201,67 @@ class DatabaseComparison:
     Written specifically for the 50M version of the database.
     Eventually consider refactoring to a more general structure.
     """
-    def __init__(self):
-        self.databases = None
-        pass
+    def __init__(self, desc_string):
+        self.desc_string = desc_string
+        self.databases = dict()
+        self.database_count = 0
+        self.summary = pd.DataFrame()
 
-    def run_threshold(self):
-        pass
+    def make_db(self, cutoff, verbose=True):
+        if (self.summary.shape[0]) > 0 and \
+                (cutoff in self.summary['cutoff'].tolist()):
+            print('cutoff {} already represented in object.'.format(cutoff))
+            return
 
-    def parse_db_building_stdout(stdout):
-        #print(stdout)
-        nodes_edges = re.findall(
-            'after network construction: (\d+), (\d+)',
-            str(stdout))
-        print(nodes_edges)
-        assert len(nodes_edges) == 1, \
-            'expected one count for nodes and one for edges'
-        nodes, edges = nodes_edges[0]
+        self.database_count += 1
+        db = Database(cutoff=cutoff,
+                      desc_string=self.desc_string,
+                      verbose=verbose)
+        self.databases[self.database_count] = db
+        results_row = db.summary_df()
+        self.summary = pd.concat([self.summary, results_row], axis=0)
 
-        density = re.findall('Graph density: (\d*\.\d+|[-+]?\d+)', str(stdout))
-        assert len(density) == 1, 'should only report one density.  Found {}'.format(density)
-        print(density)
-        return nodes, edges, density[0]
+    def make_dbs(self, cutoff_list, verbose=False):
+        for c in cutoff_list:
+            self.make_db(cutoff=c, verbose=verbose)
+
+    def plot_base(self, x, y, color, df=None, title=None,
+                  figsize=(3, 2.5), filename=None):
+        if df is None:
+            plot_data = self.summary
+        else:
+            plot_data = df
+
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+        plt.plot(plot_data[x], plot_data[y],
+                 linestyle='--', marker='o', c='g')
+        plt.xlabel(x)
+        plt.ylabel(y)
+        ax.set_ylim(bottom=0)
+
+        if title is not None:
+            plt.title(title)
+        #ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+        plt.tight_layout()
+        if filename is not None:
+            fig.savefig(filename)
+
+        return fig
+
+    def plot_cc_vs_cutoff(self, figsize=None):
+        return self.plot_base(x='cutoff', y='connected components',
+                              color='#756bb1', figsize=figsize)
+
+    def plot_db_construction_time_vs_cutoff(self, figsize=None):
+        return self.plot_base(x='cutoff', y='construction seconds',
+                              color='#756bb1', figsize=figsize)
+
+    def plot_db_construction_time_vs_n_nodes(self, figsize=None):
+        return self.plot_base(x='nodes', y='construction seconds',
+                              color='#756bb1', figsize=figsize)
+
+    def plot_cc_time_vs_cutoff(self, figsize=None):
+        return self.plot_base(x='cutoff', y='connected components time',
+                              color='#756bb1', figsize=figsize)
+
