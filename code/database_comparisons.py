@@ -8,6 +8,7 @@ import pandas as pd
 class Database:
     def __init__(self, cutoff, desc_string, verbose=True):
         self.verbose=verbose
+        self.previously_generated = False # written over if db is loaded
 
         self.cutoff = cutoff
         self.desc_string = desc_string # e.g. 'binary' or '50M'
@@ -32,6 +33,7 @@ class Database:
 
         self.create_or_load_db()
         self.find_connected_components()
+
 
 
     def create_subprocess_path(self, type, method):
@@ -137,7 +139,25 @@ class Database:
         self.cc_time = time
 
     def load_existing_db(self):
-        print('Loading {}'.format(self.db_path))
+        print('Loading prevoiusly created db: {}'.format(self.db_path))
+        assert os.path.exists(self.db_path), \
+            "database {} doesn't exist.".format(self.db_path)
+
+        stdout_build = self.create_subprocess_path(type='stdout', method='build')
+        with open(stdout_build, 'r') as myfile:
+            build_string = myfile.read()
+        self.db_construction_stdout = build_string
+        self.parse_create_db_output()
+
+        # do same for connected components
+        stdout_cc = self.create_subprocess_path(type='stdout', method='cc')
+        with open(stdout_cc, 'r') as myfile:
+            cc_string = myfile.read()
+
+        self.db_connected_components_stdout = cc_string
+        self.parse_connected_components_stdout()
+
+        self.previously_generated = True
 
     def create_or_load_db(self):
         # todo: first check if db exists; create it if not.
@@ -145,8 +165,8 @@ class Database:
             print('database {} exists.'.format(self.db_path))
             self.load_existing_db()
         else:
+            print('create database (b/c not found)')
             self.create_db()
-            self.parse_create_db_output()
 
     def load_or_find_cc_info(self):
         # TODO: only find cc if hasn't already been run.
@@ -162,6 +182,7 @@ class Database:
         info['connected components'] = self.connected_components
         info['connected components time'] = self.cc_time
         info['db path'] = self.db_path
+        info['previously_generated'] = self.previously_generated
         return pd.DataFrame({k:[v] for k, v in info.items()})
 
 class DatabaseComparison:
