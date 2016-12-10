@@ -6,7 +6,9 @@ import pandas as pd
 
 
 class Database:
-    def __init__(self, cutoff, desc_string):
+    def __init__(self, cutoff, desc_string, verbose=True):
+        self.verbose=verbose
+
         self.cutoff = cutoff
         self.desc_string = desc_string # e.g. 'binary' or '50M'
         if desc_string == 'binary':
@@ -30,12 +32,41 @@ class Database:
         self.create_or_load_db()
         self.find_connected_components()
 
+
+    def create_subprocess_path(self, type, method):
+        # E.g.
+        path = os.path.join(self.db_path, type + '_' + method + '.txt')
+        dirname = os.path.dirname(path)
+        if os.path.exists(dirname):
+            print("path {} already exists".format(dirname))
+        else:
+            print('make path {}'.format(dirname))
+            os.mkdir(dirname)
+        assert os.path.exists(dirname), 'error for {}'.format(path)
+        return path
+
     def create_db(self):
         command = ['java', '-jar', self.build_jar_path, str(self.cutoff)]
-        result = subprocess.check_output(command)
-        result_stdout_string = result.decode('utf-8')
-        #print(result_stdout_string)
-        self.db_construction_stdout = result_stdout_string
+        stdout_path = self.create_subprocess_path(type='stdout',
+                                                  method='build')
+        stderr_path = self.create_subprocess_path(type='stderr',
+                                                  method='build')
+
+        print('save stdout, stderr for create_db() to {}, {}'.format(
+            stdout_path, stderr_path))
+        stdout_file = open(stdout_path, 'w+')
+        stderr_file = open(stderr_path, 'w+')
+
+        if self.verbose:
+            print('command: \n {}'.format(" ".join(command)))
+        result = subprocess.check_output(command, stderr=stderr_file)
+        result = result.decode('utf-8')
+
+        stdout_file.write(result)
+        stdout_file.close()
+        stderr_file.close()
+
+        self.db_construction_stdout = result
         self.parse_create_db_output()
 
         # TODO: write stdout to file in the right dir.
