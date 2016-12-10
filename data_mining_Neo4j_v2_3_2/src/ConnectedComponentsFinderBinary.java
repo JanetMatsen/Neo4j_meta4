@@ -21,8 +21,8 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 public class ConnectedComponentsFinderBinary {
     public static void main(String[] args) throws IOException{
         String dbpath = args[0] ;
-        //String dbpath = "./databases/db_binary_0.020000" ;  // for testing in Eclipse only
-        System.out.println("Finding connected components for " + dbpath);
+        //String dbpath = "./databases/db_binary_0.02" ;  // for testing in Eclipse only
+        //System.out.println("Finding connected components for " + dbpath);
 
         // Parse out the cutoff from the dbpath:
         Pattern p = Pattern.compile(".*db_binary_(.*)");
