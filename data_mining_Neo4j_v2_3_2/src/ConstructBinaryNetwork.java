@@ -2,6 +2,8 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+
 import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.cypher.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -16,10 +18,18 @@ public class ConstructBinaryNetwork {
     // Note: don't have to run the data-building query each time. 
     public static void main(String[] args) throws IOException{
         // can't run for eclipse if cutoff is specified by args[0]
-        double cutoff = Double.parseDouble(args[0]);
-        //double cutoff = 0.02;  //testing in Eclipse only
+        //double cutoff = Double.parseDouble(args[0]);
+        double cutoff = 0.02;  //testing in Eclipse only
 
-        String dbpath = String.format("../data_mining_Neo4j_v2_3_2/databases/db_binary_%f", cutoff);
+        //DecimalFormat noTrailingZeros = new DecimalFormat("0.#");
+        //String cutoff_string = noTrailingZeros.format(cutoff); 
+        String s = String.valueOf(cutoff);
+        System.out.println("Cutoff as string: " + s);
+        String cutoff_string = s.indexOf(".") < 0 ? s : s.replaceAll("0*$", "").replaceAll("\\.$", "");
+        System.out.println("Cutoff as string: " + cutoff_string);
+
+        String dbpath = String.format("../data_mining_Neo4j_v2_3_2/databases/db_binary_" + s);
+        System.out.println("dbpath: " + dbpath);
 
         GraphDatabaseService g = new GraphDatabaseFactory().newEmbeddedDatabase(dbpath);
         ExecutionEngine execEngine = new ExecutionEngine(g, StringLogger.SYSTEM);
