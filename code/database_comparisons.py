@@ -99,12 +99,22 @@ class Database:
         command = ['java', '-jar', self.cc_jar_path,
                    '../data_mining_Neo4j_v2_3_2/databases/db_{}_{}'.format(
                    self.desc_string, self.cutoff)]
-        result = subprocess.check_output(command)
-        result_stdout_string = result.decode('utf-8')
-        #print(result_stdout_string)
-        self.db_connected_components_stdout = result_stdout_string
-        print(result.decode('utf-8'))
 
+        stdout_path = self.create_subprocess_path(type='stdout',
+                                                  method='cc')
+        stderr_path = self.create_subprocess_path(type='stderr',
+                                                  method='cc')
+        stdout_file = open(stdout_path, 'w+')
+        stderr_file = open(stderr_path, 'w+')
+
+        result = subprocess.check_output(command)
+        result = result.decode('utf-8')
+
+        stdout_file.write(result)
+        stdout_file.close()
+        stderr_file.close()
+
+        self.db_connected_components_stdout = result
         self.parse_connected_components_stdout()
 
     def parse_connected_components_stdout(self):
