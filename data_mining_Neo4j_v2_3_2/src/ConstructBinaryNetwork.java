@@ -21,8 +21,6 @@ public class ConstructBinaryNetwork {
         double cutoff = Double.parseDouble(args[0]);
         //double cutoff = 0.02;  //testing in Eclipse only
 
-        //DecimalFormat noTrailingZeros = new DecimalFormat("0.#");
-        //String cutoff_string = noTrailingZeros.format(cutoff); 
         String cutoff_string = String.valueOf(cutoff);
         System.out.println("Cutoff as string: " + cutoff_string);
 

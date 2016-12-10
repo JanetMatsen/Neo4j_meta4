@@ -18,7 +18,12 @@ public class ConstructNetwork50M {
         // can't run for eclipse if cutoff is specified by args[0]
         double cutoff = Double.parseDouble(args[0]);
         //double cutoff = 0.06;  //testing in Eclipse only
-        String dbpath = String.format("../data_mining_Neo4j_v2_3_2/databases/db_50M_%f", cutoff);
+
+        String cutoff_string = String.valueOf(cutoff);
+        System.out.println("Cutoff as string: " + cutoff_string);
+
+        String dbpath = String.format("../data_mining_Neo4j_v2_3_2/databases/db_50M_" + cutoff_string);
+        System.out.println("dbpath: " + dbpath);
 
         GraphDatabaseService g = new GraphDatabaseFactory().newEmbeddedDatabase(dbpath);
         ExecutionEngine execEngine = new ExecutionEngine(g, StringLogger.SYSTEM);
