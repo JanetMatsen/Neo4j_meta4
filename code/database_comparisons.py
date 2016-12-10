@@ -228,9 +228,11 @@ class DatabaseComparison:
     def plot_base(self, x, y, color, df=None, title=None,
                   figsize=(3, 2.5), filename=None):
         if df is None:
-            plot_data = self.summary
+            plot_data = self.summary.copy()
         else:
-            plot_data = df
+            plot_data = df.copy()
+
+        plot_data.sort_values(by=x, ascending=False, inplace=True)
 
         fig, ax = plt.subplots(1, 1, figsize=figsize)
         plt.plot(plot_data[x], plot_data[y],
@@ -263,5 +265,13 @@ class DatabaseComparison:
 
     def plot_cc_time_vs_cutoff(self, figsize=None):
         return self.plot_base(x='cutoff', y='connected components time',
+                              color='#756bb1', figsize=figsize)
+
+    def plot_cc_vs_nodes(self, figsize=None):
+        return self.plot_base(x='nodes', y='connected components',
+                              color='#756bb1', figsize=figsize)
+
+    def plot_cc_vs_nodes(self, figsize=None):
+        return self.plot_base(x='nodes', y='connected components',
                               color='#756bb1', figsize=figsize)
 
