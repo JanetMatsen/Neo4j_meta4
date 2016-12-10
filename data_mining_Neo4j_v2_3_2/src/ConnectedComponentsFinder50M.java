@@ -18,7 +18,7 @@ import com.besil.neo4jsna.engine.GraphAlgoEngine;
 import it.unimi.dsi.fastutil.longs.Long2LongMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 
-public class ConnectedComponentsFinder {
+public class ConnectedComponentsFinder50M {
     public static void main(String[] args) throws IOException{
         String dbpath = args[0] ;
         //String dbpath = "./databases/db_binary_0.030000" ;  // for testing in Eclipse only

@@ -54,6 +54,7 @@
   - first wipe out the existing DB's data (paste in query: "MATCH (n) \n OPTIONAL MATCH (n)-[r]-() \n DELETE n, r")
   - print the loading time for later analysis in Python.
   - image of a sub-network with node & edge properties.
+  - when loading from the larger network, had to increase memory for Java.
 
 === Queries ===
 - connected components:
@@ -83,6 +84,7 @@
   - Recommendations moving forward
     - for large networks, use Myria (?)
     - don't write out a separate graph db for each cutoff
+      - uses a lot of disk space (quantify)
       - instead alter the Neo4jSNA code to only touch/use nodes with abs(pcor)
         above a particular value
 === Conclusion: ===

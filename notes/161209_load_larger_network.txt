@@ -44,4 +44,11 @@ About the network:
   - -Xms512M -Xmx2048M
   - `-Xms1024M -Xmx2048M` in RunConfigurations --> Arguments (specific to ConstructNetwork.java)
     - specify this at command line when I run from Java on Waffle.
-- 
+- the outputs when run from Java look like this now:
+    Number of nodes, relationships (edges) before network construction: 0, 0
+    Network construction time (seconds): 314.088013
+    Number of nodes, relationships (edges) after network construction: 4, 5
+    Added 4 nodes.
+    Graph density: 1.250000
+    Shutting down database
+- make a jar and run from Python. 
