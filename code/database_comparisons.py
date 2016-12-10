@@ -94,7 +94,7 @@ class Database:
             assert len(density) == 1, 'should only report one density.  ' \
                                       'Found {}'.format(density)
             print(density)
-            self.density = density[0]
+            self.density = float(density[0])
 
         # find db construction time
         seconds = re.findall('Network construction time \(seconds\): (\d+)',
@@ -236,7 +236,7 @@ class DatabaseComparison:
 
         fig, ax = plt.subplots(1, 1, figsize=figsize)
         plt.plot(plot_data[x], plot_data[y],
-                 linestyle='--', marker='o', c='g')
+                 linestyle='--', marker='o', c=color)
         plt.xlabel(x)
         plt.ylabel(y)
         ax.set_ylim(bottom=0)
@@ -273,5 +273,9 @@ class DatabaseComparison:
 
     def plot_cc_vs_nodes(self, figsize=None):
         return self.plot_base(x='nodes', y='connected components',
+                              color='#756bb1', figsize=figsize)
+
+    def plot_density_vs_nodes(self, figsize=None):
+        return self.plot_base(x='nodes', y='density',
                               color='#756bb1', figsize=figsize)
 
