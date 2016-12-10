@@ -1,6 +1,6 @@
 date, hours, description
-161209, 8:50AM --> , load newer network into Neo4j
-161209, 2, add gene annotations to new network. 
+161209, 10, load newer network into Neo4j
+161209, 2, add gene annotations to new network.
 161206, 1, get larger network off of Waffle with Dave.
 161202, 0.5, get data from Waffle
 161201, 1, think about alternatives to Neo4j for connected components

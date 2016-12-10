@@ -58,6 +58,7 @@ public class ConstructBinaryNetwork {
 
         System.out.println("Shutting down database");
         g.shutdown();
+        System.out.println("script over");
     }
 
     public static int count_nodes(GraphDatabaseService g){

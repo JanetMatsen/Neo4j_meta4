@@ -21,11 +21,11 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 public class ConnectedComponentsFinder50M {
     public static void main(String[] args) throws IOException{
         String dbpath = args[0] ;
-        //String dbpath = "./databases/" ;  // for testing in Eclipse only
+        //String dbpath = "./databases/db_50M_0.060000" ;  // for testing in Eclipse only
         System.out.println("Finding connected components for " + dbpath);
 
         // Parse out the cutoff from the dbpath:
-        Pattern p = Pattern.compile(".*db_binary_(.*)");
+        Pattern p = Pattern.compile(".*db_50M_(.*)");
         Matcher m = p.matcher(dbpath);
         m.find();
         String cutoff = m.group(1);
