@@ -47,10 +47,9 @@ public class ConstructNetwork50M {
         System.out.println(message_before);
 
         // Track time for building the database. 
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         ExecutionResult execResult = execEngine.execute(querystr);
-        long estimatedTime = System.currentTimeMillis() - startTime;
-        float seconds = (float) estimatedTime/1000;
+        double seconds = (System.nanoTime() - startTime)/1e9;
         System.out.println(String.format("Network construction time (seconds): %f", seconds));
 
         // Print Neo4j results to console. 

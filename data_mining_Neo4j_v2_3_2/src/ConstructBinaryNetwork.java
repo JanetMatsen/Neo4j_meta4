@@ -43,10 +43,9 @@ public class ConstructBinaryNetwork {
                 n_nodes_before, n_relationships_before);
         System.out.println(message_before);
 
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         ExecutionResult execResult = execEngine.execute(querystr);
-        long estimatedTime = System.currentTimeMillis() - startTime;
-        float seconds = (float) estimatedTime/1000;
+        double seconds = (System.nanoTime() - startTime)/1e9;
         System.out.println(String.format("Network construction time (seconds): %f", seconds));
 
 
