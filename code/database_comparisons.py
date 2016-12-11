@@ -134,8 +134,6 @@ class Database:
         results = self.db_connected_components_stdout
         cc_regex = '(There are \d+ different connected components for cutoff \d*.\d+)'
         results_sentence = re.search(cc_regex, results).groups()
-        if results_sentence is None:
-            print("didn't find {} in {}".format(cc_regex, results))
         if len(results_sentence) != 1:
             print("found {} in {}".format(results_sentence))
         assert len(results_sentence) == 1, "didn't find {} in {}".format(cc_regex, results)
@@ -147,8 +145,9 @@ class Database:
         self.connected_components = cc
 
         print(results)
-        time = re.search(r'Connected Components time \(seconds\): ([\d]+)',
+        time = re.search(r'.*Connected Components time \(seconds\): (\d*.\d+).*',
                           results)
+        print(time)
         assert len(time.groups()) == 1, 'needed to match one time; found {}'.format(time.groups())
         time = float(time.groups()[0])
         self.cc_time = time
@@ -266,31 +265,38 @@ class DatabaseComparison:
 
         return fig
 
-    def plot_cc_vs_cutoff(self, figsize=None):
+    def plot_cc_vs_cutoff(self, figsize=None, logx=False, logy=False):
         return self.plot_base(x='cutoff', y='connected components',
-                              color='#756bb1', figsize=figsize)
+                              color='#756bb1', figsize=figsize,
+                              logx=logx, logy=logy)
 
-    def plot_db_construction_time_vs_cutoff(self, figsize=None):
+    def plot_db_construction_time_vs_cutoff(self, figsize=None, logx=False, logy=False):
         return self.plot_base(x='cutoff', y='construction seconds',
-                              color='#756bb1', figsize=figsize)
+                              color='#756bb1', figsize=figsize,
+                              logx=logx, logy=logy)
 
-    def plot_db_construction_time_vs_n_nodes(self, figsize=None):
+    def plot_db_construction_time_vs_n_nodes(self, figsize=None, logx=False, logy=False):
         return self.plot_base(x='nodes', y='construction seconds',
-                              color='#756bb1', figsize=figsize)
+                              color='#756bb1', figsize=figsize,
+                              logx=logx, logy=logy)
 
-    def plot_cc_time_vs_cutoff(self, figsize=None):
+    def plot_cc_time_vs_cutoff(self, figsize=None, logx=False, logy=False):
         return self.plot_base(x='cutoff', y='connected components time',
-                              color='#756bb1', figsize=figsize)
+                              color='#756bb1', figsize=figsize,
+                              logx=logx, logy=logy)
 
-    def plot_cc_vs_nodes(self, figsize=None):
+    def plot_cc_vs_nodes(self, figsize=None, logx=False, logy=False):
         return self.plot_base(x='nodes', y='connected components',
-                              color='#756bb1', figsize=figsize)
+                              color='#756bb1', figsize=figsize,
+                              logx=logx, logy=logy)
 
-    def plot_cc_vs_nodes(self, figsize=None):
+    def plot_cc_vs_nodes(self, figsize=None, logx=False, logy=False):
         return self.plot_base(x='nodes', y='connected components',
-                              color='#756bb1', figsize=figsize)
+                              color='#756bb1', figsize=figsize,
+                              logx=logx, logy=logy)
 
-    def plot_density_vs_nodes(self, figsize=None):
+    def plot_density_vs_nodes(self, figsize=None, logx=False, logy=False):
         return self.plot_base(x='nodes', y='density',
-                              color='#756bb1', figsize=figsize)
+                              color='#756bb1', figsize=figsize,
+                              logx=logx, logy=logy)
 
