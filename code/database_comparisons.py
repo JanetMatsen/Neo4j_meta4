@@ -132,9 +132,14 @@ class Database:
 
     def parse_connected_components_stdout(self):
         results = self.db_connected_components_stdout
-        result_sentence = re.findall(r'There are \d+ different connected '
-                                     'components for cutoff \d+.\d+', results)[0]
-        cc = re.findall('(\d+) different', result_sentence)
+        cc_regex = '(There are \d+ different connected components for cutoff \d*.\d+)'
+        results_sentence = re.search(cc_regex, results).groups()
+        if results_sentence is None:
+            print("didn't find {} in {}".format(cc_regex, results))
+        if len(results_sentence) != 1:
+            print("found {} in {}".format(results_sentence))
+        assert len(results_sentence) == 1, "didn't find {} in {}".format(cc_regex, results)
+        cc = re.search('(\d+) different', results_sentence[0]).groups()
         assert len(cc) == 1, 'expected one count of connected components; ' \
                              'got {}'.format(cc)
         cc = cc[0]
@@ -226,16 +231,26 @@ class DatabaseComparison:
             self.make_db(cutoff=c, verbose=verbose)
 
     def plot_base(self, x, y, color, df=None, title=None,
+                  logx=False, logy=False,
                   figsize=(3, 2.5), filename=None):
         if df is None:
             plot_data = self.summary.copy()
         else:
             plot_data = df.copy()
 
+        if logx and not logy:
+            plot_fun = plt.semilogx
+        elif logy and not logx:
+            plot_fun = plt.semilogy
+        elif logx and logy:
+            plot_fun = plt.loglog
+        else:
+            plot_fun = plt.plot
+
         plot_data.sort_values(by=x, ascending=False, inplace=True)
 
         fig, ax = plt.subplots(1, 1, figsize=figsize)
-        plt.plot(plot_data[x], plot_data[y],
+        plot_fun(plot_data[x], plot_data[y],
                  linestyle='--', marker='o', c=color)
         plt.xlabel(x)
         plt.ylabel(y)
