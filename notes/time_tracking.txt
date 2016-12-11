@@ -1,4 +1,6 @@
 date, hours, description
+161211, 3, fix time reporting and stdout parsing
+161210, 5, run scripts on Waffle
 161210, 4, make Python calls to build 50M networks work. New: Neo4j_meta4/code/database_comparisons.py
 161209, 10, load newer network into Neo4j
 161209, 2, add gene annotations to new network.

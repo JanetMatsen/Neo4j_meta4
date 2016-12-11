@@ -2,6 +2,7 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,11 +41,10 @@ public class ConnectedComponentsFinderBinary {
         // Find connected components
         ConnectedComponents cc = new ConnectedComponents();
         try{
-            float startTimeCC = System.currentTimeMillis();
+            long startTimeCC = System.nanoTime();
             engine.execute(cc);
-            float estimatedTimeCC = (System.currentTimeMillis() - startTimeCC)/1000;
             Long2LongMap components = cc.getResult();
-
+            double estimatedTimeCC = (System.nanoTime() - startTimeCC)/1e9;
             int totalComponents = new LongOpenHashSet( components.values() ).size();
             System.out.println(String.format("Connected Components time (seconds): %f.  For cutoff = %s", estimatedTimeCC, cutoff));
             System.out.println("There are "+ totalComponents+ " different connected components for cutoff " + cutoff );

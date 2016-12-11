@@ -40,9 +40,9 @@ public class ConnectedComponentsFinder50M {
         // Find connected components
         ConnectedComponents cc = new ConnectedComponents();
         try{
-            float startTimeCC = System.currentTimeMillis();
+            long startTimeCC = System.nanoTime();
             engine.execute(cc);
-            float estimatedTimeCC = (System.currentTimeMillis() - startTimeCC)/1000;
+            double estimatedTimeCC = (System.nanoTime() - startTimeCC)/1e9;
             Long2LongMap components = cc.getResult();
 
             int totalComponents = new LongOpenHashSet( components.values() ).size();
