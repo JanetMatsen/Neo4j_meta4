@@ -66,12 +66,21 @@ class ConnectedComponentsDB(object):
         self.frac_components_cross_species = \
             self.num_cc_2_species/len(self.components)
 
+        self.total_genes_in_connected_components = self.node_df.shape[0]
+
+    def print_cross_species_connected_component_summaries(self):
+        s = self.filename + ': {} components'.format(self.num_components) + '\n'
+        for c_num, c in self.components.items():
+            if c.num_species > 1:
+                s += '--- component {}: --- \n'.format(c_num)
+                s += str(c)
+        return s
 
     def __str__(self):
         s = self.filename + ': {} components'.format(self.num_components) + '\n'
         for c_num, c in self.components.items():
             s += '--- component {}: --- \n'.format(c_num)
             s += str(c)
-            return s
+        return s
 
 

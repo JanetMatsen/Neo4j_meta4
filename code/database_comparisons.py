@@ -204,6 +204,8 @@ class Database:
         info['# cc with multiple species'] = cc.num_cc_2_species
         info['frac cc with multiple species'] = \
             cc.num_cc_2_species*1./cc.num_components
+        info['total # genes in connected components'] = \
+            cc.total_genes_in_connected_components
         info['connected components time'] = self.cc_time
         info['db path'] = self.db_path
         info['construction seconds'] = self.construction_seconds
