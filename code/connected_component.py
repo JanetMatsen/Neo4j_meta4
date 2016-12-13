@@ -68,6 +68,26 @@ class ConnectedComponentsDB(object):
 
         self.total_genes_in_connected_components = self.node_df.shape[0]
 
+    def histogram_of_nodes(self):
+        fig, ax = plt.subplots(1, 1, figsize=(5,3))
+        #plt.yscale('log', nonposy='clip')
+        self.node_df.groupby('ConnectedComponents')['ConnectedComponents'].count().plot.hist(bins=1000, ax=ax)
+        ax.set_xlabel('# genes(nodes) in connected component')
+        ax.set_ylabel('# of components')
+        plt.tight_layout()
+        return fig
+
+    def histogram_of_species(self):
+        fig, ax = plt.subplots(1, 1, figsize=(5,3))
+        #plt.yscale('log', nonposy='clip')
+        plot_df = self.node_df.groupby('ConnectedComponents')['organism'].nunique()
+        n_bins = plot_df.max()
+        plot_df.plot.hist(bins=n_bins, ax=ax)
+        ax.set_xlabel('# species in connected component')
+        ax.set_ylabel('# of components')
+        plt.tight_layout()
+        return fig
+
     def print_cross_species_connected_component_summaries(self):
         s = self.filename + ': {} components'.format(self.num_components) + '\n'
         for c_num, c in self.components.items():
