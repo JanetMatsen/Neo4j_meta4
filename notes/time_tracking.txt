@@ -1,4 +1,6 @@
 date, hours, description
+161213, 5, heatmap of species in components.  Poster.
+161212, 4, analyze connected components
 161211, 3, fix time reporting and stdout parsing
 161210, 5, run scripts on Waffle
 161210, 4, make Python calls to build 50M networks work. New: Neo4j_meta4/code/database_comparisons.py

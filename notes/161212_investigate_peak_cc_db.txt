@@ -1,0 +1,7 @@
+- copied the database to its own dir since I tend to have problems with locking
+- copied a copy of older Neo4j to that dir since it's not a big set of files
+- how do I tell that Neo4j which db to load?
+  - was in /Neo4j_meta4/pcor_0.0125/neo4j-community-2.3.2/conf/neo4j-server.properties
+- launching:  `./bin/neo4j console`
+
+=== Find cluster by component id ===

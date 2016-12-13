@@ -1,0 +1,16 @@
+- don't use netowrks
+- motifs --> data mining problem
+- transactions (not in the DB sense)
+    - more like what did people buy in safeway? 
+        - which set was bought together in > 10% of purchases?
+        - many combinations.  10k^3
+            - but the # of items that contain b, e, g
+            - but you can do (b, e) first, then go (g).  A Priori algirothihm.
+- read about data mining background.
+    - see what ideas I can apply. 
+- myria is pure relational.   But it scales. 
+    - can run queries in parallel over many workers. 
+    - uses AWS. 
+- look at Myria tutorial.  
+    - he can put me in touch with people who develop Myria if tutorial isn't sufficient. 
+

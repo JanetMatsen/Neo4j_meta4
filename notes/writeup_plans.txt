@@ -45,9 +45,8 @@
   - merge on the organism name, the gene names.
   - add columns for association: positive or negative
   - add column for whether edge is cross-species.
-  - merge on
-  - prepared a toy sub-network with only two organism types
-  - merge on
+  - merge on gene names
+
 === Loading data ===
   - data is loaded via Neo4j queries
   - make one databasse per pcor cutoff value
@@ -64,7 +63,7 @@
 === unexpected challenges ===
 - locks:
   -
-- had to learn to read the log files. 
+- had to learn to read the log files.
 
 === results (Include an evaluation section, with graphs.): ===
 - note distribution of edge weights; affects interpretation of filtering.
@@ -93,6 +92,8 @@
       - instead alter the Neo4jSNA code to only touch/use nodes with abs(pcor)
         above a particular value
 === Conclusion: ===
+  - this method picks up equivalent genes in equivalent organisms
+    -
   - Skills I gained
     - Neo4j
       - query language, strengths, limitations

@@ -1,0 +1,3 @@
+- shouldn't every node be in a connected component?
+  - b/c we loaded edges! 
+- why not 2-node connected components?
