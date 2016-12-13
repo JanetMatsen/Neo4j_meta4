@@ -69,7 +69,7 @@ class ConnectedComponentsDB(object):
 
         self.total_genes_in_connected_components = self.node_df.shape[0]
 
-    def histogram_of_nodes(self):
+    def histogram_of_nodes(self, title=True):
         print('Cutoff {}: plot # of nodes for each connected component.'
               ''.format(self.cutoff))
         fig, ax = plt.subplots(1, 1, figsize=(5,3))
@@ -83,13 +83,15 @@ class ConnectedComponentsDB(object):
         plot_series.plot.hist(bins=n_bins, ax=ax)
         ax.set_xlabel('# genes(nodes) in connected component')
         ax.set_ylabel('# of connected components')
+        if title:
+            plt.suptitle('cutoff = {}'.format(self.cutoff), fontsize=12)
         plt.tight_layout()
         return fig
 
-    def histogram_of_species(self):
+    def histogram_of_species(self, figsize=(5,3), title=True):
         print('Cutoff {}: plot # of different species for each connected component.'
               ''.format(self.cutoff))
-        fig, ax = plt.subplots(1, 1, figsize=(5,3))
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
         #plt.yscale('log', nonposy='clip')
         plot_series = self.node_df.groupby('ConnectedComponents')['organism'].nunique()
         n_bins = plot_series.max()
@@ -98,10 +100,12 @@ class ConnectedComponentsDB(object):
         plot_series.plot.hist(bins=n_bins, ax=ax)
         ax.set_xlabel('# species in connected component')
         ax.set_ylabel('# of connected components')
+        if title:
+            plt.suptitle('cutoff = {}'.format(self.cutoff), fontsize=12)
         plt.tight_layout()
         return fig
 
-    def heatmap_of_organisms_appearance_in_components(self):
+    def heatmap_of_organisms_appearance_in_components(self, title=True):
         #print(self.node_df.columns)
         g = self.node_df.groupby(['ConnectedComponents', 'organism']).organism #.count()
         for t, d in g:
@@ -120,9 +124,10 @@ class ConnectedComponentsDB(object):
         plt.setp(g.ax_heatmap.get_yticklabels(), rotation=0)
         plt.setp(g.ax_heatmap.get_xticklabels(), rotation=90)
         plt.subplots_adjust(top=0.9)
-        plt.suptitle('number of genes for each organism across connected '
-                     'components (cutoff = {})'.format(self.cutoff),
-                     fontsize=20)
+        if title:
+            plt.suptitle('number of genes for each organism across connected '
+                         'components (cutoff = {})'.format(self.cutoff),
+                         fontsize=20)
         return g
 
     def print_cross_species_connected_component_summaries(self):
