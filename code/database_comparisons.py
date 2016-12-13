@@ -35,7 +35,7 @@ class Database:
         self.cc_time = None
 
         self.create_or_load_db()
-        self.find_connected_components()
+        self.load_or_find_cc_info()
 
         self.network_info_path = self.db_path
         self.connected_components = \
@@ -135,7 +135,7 @@ class Database:
         self.db_connected_components_stdout = result
         self.parse_connected_components_stdout()
 
-    def parse_connected_components_stdout(self):
+    def parse_connected_components_stdout(self, verbose=False):
         results = self.db_connected_components_stdout
         cc_regex = '(There are \d+ different connected components for cutoff \d*.\d+)'
         results_sentence = re.search(cc_regex, results).groups()
@@ -149,10 +149,12 @@ class Database:
         cc = int(cc)
         self.connected_components = cc
 
-        print(results)
+        if verbose:
+            print(results)
         time = re.search(r'.*Connected Components time \(seconds\): (\d*.\d+).*',
                           results)
-        print(time)
+        if verbose:
+            print(time)
         assert len(time.groups()) == 1, 'needed to match one time; found {}'.format(time.groups())
         time = float(time.groups()[0])
         self.cc_time = time
@@ -189,8 +191,14 @@ class Database:
             self.create_db()
 
     def load_or_find_cc_info(self):
-        # TODO: only find cc if hasn't already been run.
-        self.find_connected_components()
+        stdout_path = self.db_path + '.tsv'
+        print('look for {}'.format(stdout_path))
+        if not os.path.exists(stdout_path):
+            print('summary tsv at {} not found'.format(stdout_path))
+            self.find_connected_components()
+        else:
+            print('no need to re-run connected components; '
+                  '{} exists'.format(stdout_path))
         self.parse_connected_components_stdout()
 
     def summary_df(self):
@@ -214,6 +222,7 @@ class Database:
         info['previously_generated'] = self.previously_generated
         return pd.DataFrame({k:[v] for k, v in info.items()})
 
+
 class DatabaseComparison:
     """
     Written specifically for the 50M version of the database.
@@ -226,6 +235,7 @@ class DatabaseComparison:
         self.summary = pd.DataFrame()
 
     def make_db(self, cutoff, verbose=True):
+        # makes db if doesn't exist; loads if already exists.
         if (self.summary.shape[0]) > 0 and \
                 (cutoff in self.summary['cutoff'].tolist()):
             print('cutoff {} already represented in object.'.format(cutoff))
@@ -242,6 +252,11 @@ class DatabaseComparison:
     def make_dbs(self, cutoff_list, verbose=False):
         for c in cutoff_list:
             self.make_db(cutoff=c, verbose=verbose)
+
+    def cc_by_cutoff_num(self, cutoff):
+        df_row = self.summary[self.summary['cutoff'] == cutoff]
+        assert df_row.shape[0] == 1, "needed to match one row"
+        return df_row.reset_index()['cc obj'][0]
 
     def plot_base(self, x, y, color, df=None, title=None,
                   logx=False, logy=False,
