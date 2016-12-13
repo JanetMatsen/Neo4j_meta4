@@ -179,6 +179,7 @@ class Database:
         self.previously_generated = True
 
     def create_or_load_db(self):
+        print("create or load database for {}".format(self.db_path))
         # todo: first check if db exists; create it if not.
         if os.path.exists(self.db_path):
             print('database {} exists.'.format(self.db_path))

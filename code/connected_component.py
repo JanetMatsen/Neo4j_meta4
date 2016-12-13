@@ -69,20 +69,32 @@ class ConnectedComponentsDB(object):
         self.total_genes_in_connected_components = self.node_df.shape[0]
 
     def histogram_of_nodes(self):
+        print('Cutoff {}: plot # of nodes for each connected component.'
+              ''.format(self.cutoff))
         fig, ax = plt.subplots(1, 1, figsize=(5,3))
         #plt.yscale('log', nonposy='clip')
-        self.node_df.groupby('ConnectedComponents')['ConnectedComponents'].count().plot.hist(bins=1000, ax=ax)
+        plot_series = self.node_df.groupby('ConnectedComponents')['ConnectedComponents'].count()
+        n_bins = plot_series.max()
+        if n_bins > 50:
+            n_bins = int(n_bins/2.)
+        elif n_bins > 100:
+            n_bins = int(n_bins/10.)
+        plot_series.plot.hist(bins=n_bins, ax=ax)
         ax.set_xlabel('# genes(nodes) in connected component')
         ax.set_ylabel('# of components')
         plt.tight_layout()
         return fig
 
     def histogram_of_species(self):
+        print('Cutoff {}: plot # of different species for each connected component.'
+              ''.format(self.cutoff))
         fig, ax = plt.subplots(1, 1, figsize=(5,3))
         #plt.yscale('log', nonposy='clip')
-        plot_df = self.node_df.groupby('ConnectedComponents')['organism'].nunique()
-        n_bins = plot_df.max()
-        plot_df.plot.hist(bins=n_bins, ax=ax)
+        plot_series = self.node_df.groupby('ConnectedComponents')['organism'].nunique()
+        n_bins = plot_series.max()
+        if n_bins > 50:
+            n_bins = int(n_bins/2.)
+        plot_series.plot.hist(bins=n_bins, ax=ax)
         ax.set_xlabel('# species in connected component')
         ax.set_ylabel('# of components')
         plt.tight_layout()
