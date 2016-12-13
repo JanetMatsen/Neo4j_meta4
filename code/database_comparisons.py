@@ -193,12 +193,17 @@ class Database:
         self.parse_connected_components_stdout()
 
     def summary_df(self):
+        cc = self.connected_components
         info = {}
         info['cutoff'] = self.cutoff
         info['nodes'] = self.nodes
         info['edges'] = self.edges
         info['density'] = self.density
-        info['connected components'] = self.connected_components
+        info['cc obj'] = self.connected_components
+        info['# connected components'] = cc.num_components
+        info['# cc with multiple species'] = cc.num_cc_2_species
+        info['frac cc with multiple species'] = \
+            cc.num_cc_2_species*1./cc.num_components
         info['connected components time'] = self.cc_time
         info['db path'] = self.db_path
         info['construction seconds'] = self.construction_seconds

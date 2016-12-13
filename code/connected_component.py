@@ -32,6 +32,9 @@ class ConnectedComponent(object):
 
 
 class ConnectedComponentsDB(object):
+    """
+    Store info for all of the connected components in a single database.
+    """
     def __init__(self, cutoff, desc_string):
         self.cutoff = cutoff
         self.desc_string = desc_string
@@ -47,13 +50,28 @@ class ConnectedComponentsDB(object):
 
         self.components = dict()
         self.parse_out_components()
+        self.num_components = len(self.components.keys())
 
     def parse_out_components(self):
+        self.num_cc_2_species = 0
+
         for key, df in self.node_df.groupby('ConnectedComponents'):
             print('component #: {}.  Shape: {}'.format(key, df.shape))
-            self.components[key] = \
-                ConnectedComponent(cutoff=self.cutoff,
-                                   desc_string=self.desc_string,
-                                   df=df)
+            cc = ConnectedComponent(cutoff=self.cutoff,
+                                    desc_string=self.desc_string, df=df)
+            self.components[key] = cc
+            if len(cc.Counter.keys()) > 1:
+                self.num_cc_2_species += 1
+
+        self.frac_components_cross_species = \
+            self.num_cc_2_species/len(self.components)
+
+
+    def __str__(self):
+        s = self.filename + ': {} components'.format(self.num_components) + '\n'
+        for c_num, c in self.components.items():
+            s += '--- component {}: --- \n'.format(c_num)
+            s += str(c)
+            return s
 
 
