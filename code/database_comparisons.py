@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 
 import pandas as pd
 
+from connected_component import ConnectedComponentsDB
+
 
 class Database:
     def __init__(self, cutoff, desc_string, verbose=True):
@@ -35,7 +37,10 @@ class Database:
         self.create_or_load_db()
         self.find_connected_components()
 
-
+        self.network_info_path = self.db_path
+        self.connected_components = \
+            ConnectedComponentsDB(cutoff=self.cutoff,
+                                  desc_string=self.desc_string)
 
     def create_subprocess_path(self, type, method):
         # E.g.
@@ -197,6 +202,7 @@ class Database:
         info['connected components time'] = self.cc_time
         info['db path'] = self.db_path
         info['construction seconds'] = self.construction_seconds
+        info['construction minutes'] = self.construction_seconds/60
         info['previously_generated'] = self.previously_generated
         return pd.DataFrame({k:[v] for k, v in info.items()})
 
