@@ -5,6 +5,7 @@ import os
 import matplotlib.pyplot as plt
 
 import pandas as pd
+import seaborn as sns
 
 
 class ConnectedComponent(object):
@@ -81,7 +82,7 @@ class ConnectedComponentsDB(object):
             n_bins = int(n_bins/10.)
         plot_series.plot.hist(bins=n_bins, ax=ax)
         ax.set_xlabel('# genes(nodes) in connected component')
-        ax.set_ylabel('# of components')
+        ax.set_ylabel('# of connected components')
         plt.tight_layout()
         return fig
 
@@ -96,9 +97,33 @@ class ConnectedComponentsDB(object):
             n_bins = int(n_bins/2.)
         plot_series.plot.hist(bins=n_bins, ax=ax)
         ax.set_xlabel('# species in connected component')
-        ax.set_ylabel('# of components')
+        ax.set_ylabel('# of connected components')
         plt.tight_layout()
         return fig
+
+    def heatmap_of_organisms_appearance_in_components(self):
+        #print(self.node_df.columns)
+        g = self.node_df.groupby(['ConnectedComponents', 'organism']).organism #.count()
+        for t, d in g:
+            #print(t)
+            pass
+        g2 = pd.DataFrame(g.count())
+        print(g2.columns)
+        g2.rename(columns={'organism':'count(organism)'}, inplace=True)
+        g2.reset_index(['ConnectedComponents'], inplace=True)
+        g2.index= g2.index.str.replace('[ ]+\(UID[0-9]+\)', '')
+
+        dp = g2.pivot(columns='ConnectedComponents', values='count(organism)').fillna(0)
+        #dp #.min()
+        pal = sns.cubehelix_palette(start=2.8, rot=.1, light=1, dark=0, as_cmap=True)
+        g = sns.clustermap(dp, cmap=pal)
+        plt.setp(g.ax_heatmap.get_yticklabels(), rotation=0)
+        plt.setp(g.ax_heatmap.get_xticklabels(), rotation=90)
+        plt.subplots_adjust(top=0.9)
+        plt.suptitle('number of genes for each organism across connected '
+                     'components (cutoff = {})'.format(self.cutoff),
+                     fontsize=20)
+        return g
 
     def print_cross_species_connected_component_summaries(self):
         s = self.filename + ': {} components'.format(self.num_components) + '\n'
