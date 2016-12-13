@@ -5,3 +5,20 @@
 - launching:  `./bin/neo4j console`
 
 === Find cluster by component id ===
+
+$MATCH (n) WHERE n.ConnectedComponents=43 RETURN n
+
+$match (n) where n.gene_product =~ 'methanol dehydrogenase .*' RETURN n
+
+match (n)<-->m where n.gene_product =~ '.* nitrogen.*' RETURN n
+match (n)<-->(m) where n.gene_product =~ '.* nitrogen.*' RETURN n, m
+
+# only 2 pairs of nodes:
+MATCH (n)<- [e {cross_species:'True', association:'positive'}] -> (m) RETURN n, m
+
+
+=== Styling ===
+- currently edges are loaded as type X.
+- instead use logic to give them types pos_pcor and neg_pcor
+  - coloring of edges is done by edge type, not attribute.
+   - http://stackoverflow.com/questions/33466999/change-node-color-based-on-properties-neo4j

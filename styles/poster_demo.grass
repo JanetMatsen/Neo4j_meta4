@@ -38,9 +38,10 @@ node.Methylobacter_123 {
   caption: '{gene}';
 }
 
-relationship.neg {
+relationship.X {
+  caption: '{pcor}';
   shaft-width: 2px;
-  color: #FF756E;
+  color: #989898;
   border-color: #E06760;
   text-color-internal: #FFFFFF;
 }

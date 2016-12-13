@@ -26,22 +26,29 @@
 
 \section{Introduction} %The description of the problem you are trying to solve
 
-My lab studies interactions between methane oxidizing microbes and other bacteria, using microbe-rich sediment at the bottom of Lake Washington as a model ecosystem.  
+My lab studies interactions between methane oxidizing microbes and other bacteria, using microbe-rich sediment at the bottom of Lake Washington as a model ecosystem. 
 Understanding how these communities oxidize methane would provide insight into a major greenhouse gas mitigation system. 
-When a scoop of lake sediment is incubated with methane as the only carbon source, three types of organisms appear: 
-(a) methane-consuming "methanotrophic" bacteria, 
-(b) methanol-consuming non-methanotrophic "methylotrophic" bacteria, and 
-(c) bacteria that can consume only multi-carbon compounds, called "heterotrophs".
-Initial steps will focus on untangling interactions between the methanotrophs, and the non-methanotrophic methylotrophs.
-Should the methods prove fruitful, they can be extended to the heterotrophs. 
+Which organisms tend to pair together in nature, and what metabolic roles do each play?  
+When a scoop of Lake Washington sediment is incubated with methane as the only carbon source, the population becomes enriched in methane-consuming methanotrophs.
+What is more surprising is the consistent appearance of non-methanotrophic "methylotrophic" bacteria.
+These microbes can use single carbon-compounds other than methane, such as methanol and methylamines. 
+A third group also appears; these microbes presumably only eat multi-carbon compounds.
 
-%Previous studies from our lab showed that certain partnerships between groups of methanotrophs and methylotrophs tend to occur. 
-%Transfer of methanol from methanotrophs to methylotrophs is known to be central to all partnerships, however, this does not explain why certain partnerships tend to occur and others do not.
-%Moreover, other metabolic interactions remain unknown.
+It is suspected that the methanotrophs are providing the methylotrophs with methanol, but are there additional nutrient exchanges?
+Perhaps the methylotrophs are assisting with nitrogen fixation, or synthesis of key nutrients. 
+What exactly is the third group is consuming?  
+Are they eating other secretions or just scavenging the byproducts of cell death?
+Are they actively killing the methanotrophs and methylotrophs?
 
-Gene expression data from 88 complex communities was previously assembled and used to produce a partial correlation matrix.
-I aim to use data mining and a graph database to identify sub-graph motifs that could elucidate the metabolic interactions between microbes in these samples.
+Our lab has gene expression profiles from 83 samples of sediment incubation. 
+From these, a partial correlation matrix was previously computed. 
+Such a partial correlation matrix can be represented as a graph and mined to identify sub-graph motifs demonstrating metabolic cooperation between microbes. 
 In particular, identification of hubs and cycles that include genes from two bacteria can be used to discover metabolic cooperation, such as nutrient exchange. 
+
+%This project began by 
+%This project aimed to infer specific metabolic interactions between microbes in these samples using graph algorithms and queries.
+% In addition, it provides a pilot study for the suitibility of Neo4j for future network-based research in our lab.
+
 % Hubs are small sub-graphs that are more highly connected than the background. 
 
 %We are motivated to find patterns that illustrate metabolic cooperation between different organisms in our samples.  
@@ -52,7 +59,7 @@ In particular, identification of hubs and cycles that include genes from two bac
 
 \section{Approach} %The description of your approach
 
-I am modeling the partial correlation network in Neo4j, the leading graph database.
+The partial correlation network was modeled Neo4j, the leading graph database.
 Nodes represent genes, and edges connect genes with statistically significant partial correlation with one another. 
 The nodes are labeled with the species, gene id, and protein name.
 Edges are labeled with the significance weight, and sign (positive or negative). 
@@ -116,6 +123,9 @@ DAA®VE
 Third, if I have time, I will try to implement the community detection algorithm described in \cite{girvan2002community}.
 This algorithm works to find edges that are least central to communities in the graph and removes them.
 Such ``between'' edges can be found by looking for edges that are often used in shortest paths between pairs of nodes.
+
+\section{future work}
+Coloring by organism type or partial correlation sign requires making each node a different type; requires more sophisticated database construction. 
 
 \subsection{Loading data}
 \begin{verbatim}
