@@ -6,11 +6,25 @@
 \usepackage{url}
 
 \usepackage{graphicx} % for \includegraphics
+\usepackage{hyperref} % for hyperref urls
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=black,
+    citecolor=blue
+}
 
 %\usepackage{natbib} % just grabbed some random bibliography package
  
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
+
+\usepackage{float}  %For [H]
+\floatplacement{figure}{H}  % default figure placement
+\floatplacement{table}{H}  % default table placement
+\usepackage{caption}
+\usepackage{subcaption}
  
 \newenvironment{problem}[2][Problem]{\begin{trivlist}
 \item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
@@ -44,6 +58,7 @@ Our lab has gene expression profiles from 83 samples of sediment incubation.
 From these, a partial correlation matrix was previously computed. 
 Such a partial correlation matrix can be represented as a graph and mined to identify sub-graph motifs demonstrating metabolic cooperation between microbes. 
 In particular, identification of hubs and cycles that include genes from two bacteria can be used to discover metabolic cooperation, such as nutrient exchange. 
+All code for this project is at \href{https://github.com/JanetMatsen/Neo4j_meta4}{github.com/JanetMatsen/Neo4j\_meta4}.
 
 %This project began by 
 %This project aimed to infer specific metabolic interactions between microbes in these samples using graph algorithms and queries.
@@ -57,22 +72,6 @@ In particular, identification of hubs and cycles that include genes from two bac
 %Searching our graph for similar motifs that include both methanotrophs and methylotrophs could uncover which pairs tend to interact, and what genes' expression are linked to these co-occurrences.  
 %These motifs are directly useful for our lab, as they lead to testable hypotheses for wet lab experiments.
 
-\section{Approach} %The description of your approach
-
-The partial correlation network was modeled Neo4j, the leading graph database.
-Nodes represent genes, and edges connect genes with statistically significant partial correlation with one another. 
-The nodes are labeled with the species, gene id, and protein name.
-Edges are labeled with the significance weight, and sign (positive or negative). 
-Two gene's nodes have an edge with a large positive value when those two genes tend to be highly expressed together throughout our samples. 
-Conversely, large negative edge weights indicate that the corresponding genes tend to be anticorrelated. 
-
-First, I will find connected components.  % connected components --> everything that's connected. 
-These will be filtered based on the most essential feature: a mixture of organism types including one methanotroph and one methylotroph.
-If these connected components are very large, I will seek to break them apart by filtering for magnitude of covariance, and look for cliques within. 
-Then I will use techniques in from social network analysis to do community detection. 
-
-I will leverage existing packages when available, and write my own algorithms when necessary. 
-
 \section{Related Work}
 %A description of related work. How does your approach compare with what has been done before. Suggestion: cite about 3 papers. Don't worry about finding *all* the existing related work. Our worry here is not the novelty of your project. The goal is for you to learn that placing your work in perspective of what has been done before is a crucial step in research. For the purpose of the class, we expect your related work to be incomplete.
 
@@ -83,60 +82,134 @@ Recent work has applied partial correlation to the ``phyllosphere'' microbiome, 
 
 %\cite{Mateos:2011aa}
 
+\section{Methods} %The description of your approach
 
-\section{Progress to Date} %A description of what you have accomplished so far and any problems or unexpected issues that you encountered.
+\subsection{Choice of Neo4j}
 
-I first prepared my data for import into Neo4j. 
-Having zero experience with Neo4j or graph databases, I first sought to load a small subset of my graph into Neo4j, and practice basic queries.
-I started with a CSV representing a two-organism sub-graph, which was lacking details like the organism and gene names.
-I was able to locate more descriptive data and merge it onto the network using Pandas in Python. 
+Neo4j was chosen for its user-friendly query language, Cypher. % TODO: cite
+While the queries required to execute this project are no sophisticated, downstream data analysis and exploration will be greatly accelerated by the ability to perform queries on the graph and display them in Neo4j's browser. 
+For example, we may wish to query for a chain of nodes such as \texttt{(metabolite production organism:A) --> (metabolite export organism:A) --> (metabolite import organism:B) --> (metabolite use organism:B)}.  
 
-Loading this table into Neo4j required significant understanding of Cypher, Neo4j's query language.
-In short, data loading involves iterating over a data file, adding nodes and edges as you go. 
-In Neo4j, it is easier to iterate over of a CSV that is on the internet than a local file, so I put mine on GitHub. 
-Special care was required to ensure that each gene produced only one node. 
-I later discovered that I will want to extract separate CSVs representing the nodes so I use the organism name as the node type.
+Neo4j does have drawbacks that did not affect this project but should be considered for larger scale projects.
+First, though multiple clients can run in parallel on the same database, Neo4j cannot scale queries across multiple servers.  
+When the query run time is a key concern, tools such as Grail and Giraph \cite{fan2015case} should be considered. 
+Grail provides syntactic layers that allow user-friendly graph-query like APIs function on traditional RDBMSs.
+% The Case Against Specialized Graph Analytics Engines. CIDR 2015
+Giraph focuses on parallelizability by using Hadoop. 
+Myria also enhances parallelizability and graph-like queries with the advantage of handling distribution of the database across remote machines. 
 
-First, I wanted to find connected components.  
-Even for these simplest of tasks, people use external packages.
-I am working to use Neo4jSNA, a social network analysis package written in Java for Neo4j\footnote{\url{https://github.com/besil/Neo4jSNA}}.
-My only prior experience with Java (and compiled languages in general) was the SimpleDB exercise, and it has been surprisingly difficult to run Neo4j from Java.
+\subsection{Graph construction and connected components}
 
-Many of my initial attempts to use Neo4jSNA failed.
-After some digging in GitHub, I found out that Neo4jSNA was most recently updated for Neo4j 2.3.2, which is much older than the current version of Neo4j, which is 3.0.7. 
-Even the latest 2-series version of Neo4j, 2.3.7, is not compatible with Neo4jSNA, but I was able to find the JARs for 2.3.2 via a link from the Chocolatey package manager.
-However, I now have this version of Neo4j running, and am able to send it queries and use some of the Neo4jSNA algorithms on it. 
+The partial correlation network was modeled Neo4j, the leading graph database.
+Nodes represent genes, and edges connect genes with statistically significant partial correlation with one another. 
+The nodes are labeled with the species, gene id, and protein name.
+Edges are labeled with the significance weight, and sign (positive or negative). 
+Two gene's nodes have an edge with a large positive value when those two genes tend to be highly expressed together throughout our samples. 
+Conversely, large negative edge weights indicate that the corresponding genes tend to be anticorrelated. 
 
-\section{Plan for Quarter}  %A brief plan for the rest of the quarter. This plan must include the experiments you will conduct to evaluate your solution.
+I prepared an information-enriched dataset for import into Neo4j from a file listing only gene loci and a partial correlation value (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/jupyter/prepare_whole_network.ipynb}{this notebook}).  
+The result was a 50 million row tsv file enriched with genome names, gene products, magnitudes of partial correlations, and a label for cross-species partial correlations.
 
-I am still working toward being able to more fully use Neo4jSNA and other Java-based Neo4j packages.
-My first goal is to use already implemented algorithms to find community structure in my data, starting with the two-organism subgraph.
-I will use the output of those algorithms to label nodes in the browser to visualize the community structure.
-I will check to make sure that the output of the algorithms makes sense compared to my intuitions about the structure.
+Different databases were built for varying partial correlation values in the set \texttt{[0.005,  0.0075,  0.01,  0.0125,  0.015,  0.02,  0.025,  0.03,  0.035,  0.04,  0.045,  0.05,  0.055,  0.06]}
+The following \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/data_mining_Neo4j_v2_3_2/queries/load_network--specify_cutoff.txt}{Cypher query} was used to iterate over the 50 million edge dataset and build databases:
 
-After these tests in this simple case, I will scale up to the full data set.
-This is likely to require Amazon web services, which will require me to learn how to work on the cloud. 
-Hopefully the same jars will work as I am using on my mac once I install a Java software development kit.
+\begin{verbatim}
+        LOAD CSV WITH HEADERS FROM
+            'file: \%s'
+        AS line FIELDTERMINATOR '\t'
+        WITH toFloat(line.pcor) AS pcor,
+             abs(toFloat(line.pcor)) AS abs_pcor,
+             line.cross_species AS cross_species,
+             line.association AS association,
+             line.source_locus_tag AS source_locus_tag,
+             line.target_locus_tag AS target_locus_tag,
+             line.source_organism_name AS source_organism_name,
+             line.target_organism_name AS target_organism_name,
+             line.source_gene AS source_gene,
+             line.target_gene AS target_gene,
+             line.source_gene_product AS source_gene_product,
+             line.target_gene_product AS target_gene_product
+        WHERE abs_pcor > %f
+        MERGE (g1:Gene {locus_tag:source_locus_tag,
+                        organism:source_organism_name,
+                        gene:source_gene,
+                        gene_product:source_gene_product})
+        MERGE (g2:Gene {locus_tag:target_locus_tag,
+                        organism:target_organism_name,
+                        gene:target_gene,
+                        gene_product:target_gene_product})
+        MERGE (g1) -[:X {pcor:pcor,
+                         pcor_abs:abs_pcor,
+                         cross_species:cross_species,
+                         association:association}]-> (g2)
+\end{verbatim}
 
-DAA®VE
+The \texttt{MERGE} operator ensures the pattern exists; if it does not find a piece of the pattern, it adds the corresponding nodes and edges. 
+The \texttt{\%s} at the top and \texttt{\%f} in the \texttt{WHERE} clause allowed string substitution in Java to specify which source file and cutoff to use. 
+I used the Neo4j Java API to call this query from Eclipse (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/data_mining_Neo4j_v2_3_2/src/ConstructNetwork50M.java}{ConstructNetwork50M.java}), and count the number of nodes added to the database. 
+After my script worked well, I added command line arguments and saved the script to a Jar to be run on a remote machine with large memory.
+
+I made a second Jar (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/data_mining_Neo4j_v2_3_2/src/ConnectedComponentsFinder50M.java}{ConnectedComponentsFinder50M.java}) that runs \href{https://github.com/besil/Neo4jSNA}{Neo4jSNA}'s \footnote{\url{https://github.com/besil/Neo4jSNA}} connected components algorithm.
+Neo4jSNA was most recently updated for Neo4j 2.3.2, which is much older than the current version of Neo4j, which is 3.0.7. 
+Even the latest 2-series version of Neo4j, 2.3.7, is not compatible with Neo4jSNA, but the JARs for 2.3.2 was found via a link from the Chocolatey package manager.
+The connected components algorithm labeled the nodes in my Neo4j database with the corresponding connected components identification number.
+The labels enumerated by iterating over notes using the Java API.
+
+These jars were each called by Python (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{database\_comparisons.py} and the corresponding \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/jupyter/build_graphs_and_find_connected_components_50M.ipynb}{ipython notebook}).
+I had python objects to represent information at each level of the analysis.  
+The \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{Database} class could submit jobs to create single databases and parse statistics about the product from Java's standard output.
+The \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{DatabaseComparison} class contained many database objects, and included many cross-database plotting methods.
+Database objects each contained a \texttt{connected\_components} attribute, which was an instance of my \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/connected_component.py}{ConnectedComponentsDB} class.
+A single database's ConnectedComponentsDB included one or more \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/connected_component.py}{ConnectedComponent} instances.
+These Python structures allowed me to explore results across different granularities in my jupyter notebook sessions.
+
+\section{Results}  
+
+Queries ran fast. 
+
+\begin{figure}[H]
+    \captionsetup{width=0.6\textwidth}
+    \centering
+    \includegraphics[scale=0.8]{../../figures_curated/161209_hist_of_pcor_values_50_bins.pdf}
+    \caption{Distribution of partial correlation values each database was built from.}
+    %\label{fig:ABCD}
+\end{figure}
+
+\begin{figure}[H]
+    \captionsetup{width=0.6\textwidth}
+    \centering
+    \includegraphics[scale=0.55]{../../figures_curated/{161213_heatmap_cutof_0.02}.png}
+    \caption{Distribution of partial correlation values each database was built from.}
+    %\label{fig:ABCD}
+\end{figure}
+
+
+These will be filtered based on the most essential feature: a mixture of organism types including one methanotroph and one methylotroph.
+If these connected components are very large, I will seek to break them apart by filtering for magnitude of covariance, and look for cliques within. 
+Then I will use techniques in from social network analysis to do community detection. 
+
+I will leverage existing packages when available, and write my own algorithms when necessary. 
+
+
+
+
+\section{Future work}
+
+Connected components $\rightarrow$ hubs and cycles. 
+
+Coloring by organism type or partial correlation sign requires making each node a different type; requires more sophisticated database construction. 
+
 
 Third, if I have time, I will try to implement the community detection algorithm described in \cite{girvan2002community}.
 This algorithm works to find edges that are least central to communities in the graph and removes them.
 Such ``between'' edges can be found by looking for edges that are often used in shortest paths between pairs of nodes.
 
-\section{future work}
-Coloring by organism type or partial correlation sign requires making each node a different type; requires more sophisticated database construction. 
 
-\subsection{Loading data}
-\begin{verbatim}
-ABCD
-    EFGH
-\end{verbatim}
 
 %\bibliographystyle{te}
 
 \bibliographystyle{plain}
-\bibliography{milestone}
+\bibliography{neo4j}
  
  
 \end{document}

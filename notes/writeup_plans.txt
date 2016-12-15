@@ -66,6 +66,7 @@
 - had to learn to read the log files.
 
 === results (Include an evaluation section, with graphs.): ===
+- note that DB build time was the slowest part; queries were fast. 
 - note distribution of edge weights; affects interpretation of filtering.
   - when you vary the threshold,
     - number of nodes
