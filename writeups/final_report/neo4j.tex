@@ -11,7 +11,7 @@
     colorlinks=true,
     linkcolor=blue,
     filecolor=magenta,      
-    urlcolor=black,
+    urlcolor=blue,
     citecolor=blue
 }
 
@@ -40,21 +40,22 @@
 
 \section{Introduction} %The description of the problem you are trying to solve
 
-My lab studies interactions between methane oxidizing microbes and other bacteria, using microbe-rich sediment at the bottom of Lake Washington as a model ecosystem. 
+My lab studies interactions between methane oxidizing bacteria and other microorganisms, using microbe-rich sediment at the bottom of Lake Washington as a model ecosystem. 
 Understanding how these communities oxidize methane would provide insight into a major greenhouse gas mitigation system. 
-Which organisms tend to pair together in nature, and what metabolic roles do each play?  
-When a scoop of Lake Washington sediment is incubated with methane as the only carbon source, the population becomes enriched in methane-consuming methanotrophs.
-What is more surprising is the consistent appearance of non-methanotrophic "methylotrophic" bacteria.
-These microbes can use single carbon-compounds other than methane, such as methanol and methylamines. 
-A third group also appears; these microbes presumably only eat multi-carbon compounds.
+When a scoop of Lake Washington sediment is incubated in a bottle with methane as the only carbon source, the population becomes enriched in methane-consuming methanotrophs.
+Non-methanotrophic "methylotrophic" bacteria, which can use single carbon-compounds other than methane, always grow alongside the methanotrophic bacteria.
+The composition of methanotrophs and methylotrophs in each sample can vary widely.
+A third group which can only use multi-carbon compounds also appears, further complicating the interactions.
 
 It is suspected that the methanotrophs are providing the methylotrophs with methanol, but are there additional nutrient exchanges?
 Perhaps the methylotrophs are assisting with nitrogen fixation, or synthesis of key nutrients. 
 What exactly is the third group is consuming?  
 Are they eating other secretions or just scavenging the byproducts of cell death?
 Are they actively killing the methanotrophs and methylotrophs?
+%Uncovering the reasons some pairs are more likely to appear together than others would advance our understanding of methane capture by this natural system.
+We aim to discover which organisms tend to pair together in nature, and what metabolic roles each play. 
 
-Our lab has gene expression profiles from 83 samples of sediment incubation. 
+Our lab has gene expression profiles from 83 incubations of Lake Washington sediment. 
 From these, a partial correlation matrix was previously computed. 
 Such a partial correlation matrix can be represented as a graph and mined to identify sub-graph motifs demonstrating metabolic cooperation between microbes. 
 In particular, identification of hubs and cycles that include genes from two bacteria can be used to discover metabolic cooperation, such as nutrient exchange. 
@@ -78,7 +79,7 @@ All code for this project is at \href{https://github.com/JanetMatsen/Neo4j_meta4
 Graphs are a useful tool for describing how species interact \cite{borthagaray2014inferring}.
 Partial correlations are often used to determine the connections in a graph in which the edges represent influence of one node on another \cite{hero2012hub}. 
 Once a graph is in hand, we can find community structure: groups of nodes where the nodes within a group are highly connected to each other but there are fewer connections between groups \cite{girvan2002community}.
-Recent work has applied partial correlation to the ``phyllosphere'' microbiome, the collection of bacteria that live on plants \cite{agler2016microbial}.
+Recent work has applied partial correlation analysis to the ``phyllosphere'' microbiome, the collection of bacteria that live on plants \cite{agler2016microbial}.
 
 %\cite{Mateos:2011aa}
 
@@ -86,28 +87,30 @@ Recent work has applied partial correlation to the ``phyllosphere'' microbiome, 
 
 \subsection{Choice of Neo4j}
 
-Neo4j was chosen for its user-friendly query language, Cypher. % TODO: cite
-While the queries required to execute this project are no sophisticated, downstream data analysis and exploration will be greatly accelerated by the ability to perform queries on the graph and display them in Neo4j's browser. 
-For example, we may wish to query for a chain of nodes such as \texttt{(metabolite production organism:A) --> (metabolite export organism:A) --> (metabolite import organism:B) --> (metabolite use organism:B)}.  
+The partial correlation graph for these 83 samples will be represented in Neo4j, which has a user-friendly query language, Cypher. % TODO: cite
+While the queries required to execute this project are straightforward, downstream data analysis and exploration will be greatly accelerated by the ability to perform queries on the graph and display them in Neo4j's browser. 
+In cypher, nodes are represented by parentheses.  
+An example query we may wish to run could be similar to this search for four nodes with specific species and function specifications: \texttt{(organism:A, gene: metabolite X production) $\leftrightarrow$ (organism:A, gene: metabolite X export) $\leftrightarrow$ (organism:B, gene: metabolite X import) $\leftrightarrow$ (organism:B, gene: metabolite X use )}.  
 
 Neo4j does have drawbacks that did not affect this project but should be considered for larger scale projects.
 First, though multiple clients can run in parallel on the same database, Neo4j cannot scale queries across multiple servers.  
 When the query run time is a key concern, tools such as Grail and Giraph \cite{fan2015case} should be considered. 
-Grail provides syntactic layers that allow user-friendly graph-query like APIs function on traditional RDBMSs.
+Grail provides syntactic layers that allow user-friendly graph-query like APIs to work on traditional RDBMSs.
 % The Case Against Specialized Graph Analytics Engines. CIDR 2015
 Giraph focuses on parallelizability by using Hadoop. 
 Myria also enhances parallelizability and graph-like queries with the advantage of handling distribution of the database across remote machines. 
+As the results section illustrates, query and algorithm time were not limiting factors in this project. 
 
 \subsection{Graph construction and connected components}
 
-The partial correlation network was modeled Neo4j, the leading graph database.
+The partial correlation network was modeled in Neo4j, the leading graph database.
 Nodes represent genes, and edges connect genes with statistically significant partial correlation with one another. 
 The nodes are labeled with the species, gene id, and protein name.
 Edges are labeled with the significance weight, and sign (positive or negative). 
-Two gene's nodes have an edge with a large positive value when those two genes tend to be highly expressed together throughout our samples. 
+Two gene's nodes have an edge with a large positive value when those two genes tend to be highly expressed together throughout our samples, after controlling for other covarying gene's effects. 
 Conversely, large negative edge weights indicate that the corresponding genes tend to be anticorrelated. 
 
-I prepared an information-enriched dataset for import into Neo4j from a file listing only gene loci and a partial correlation value (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/jupyter/prepare_whole_network.ipynb}{this notebook}).  
+I prepared an information-enriched dataset for import into Neo4j from a file listing only gene loci and a partial correlation values (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/jupyter/prepare_whole_network.ipynb}{this notebook}).  
 The result was a 50 million row tsv file enriched with genome names, gene products, magnitudes of partial correlations, and a label for cross-species partial correlations.
 
 Different databases were built for varying partial correlation values in the set \texttt{[0.005,  0.0075,  0.01,  0.0125,  0.015,  0.02,  0.025,  0.03,  0.035,  0.04,  0.045,  0.05,  0.055,  0.06]}
@@ -144,20 +147,22 @@ The following \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/data_
                          association:association}]-> (g2)
 \end{verbatim}
 
-The \texttt{MERGE} operator ensures the pattern exists; if it does not find a piece of the pattern, it adds the corresponding nodes and edges. 
+The \texttt{MERGE} operator ensures the pattern exists in the Neo4j database instance.
+If a piece of the pattern is not found, it is added. 
 The \texttt{\%s} at the top and \texttt{\%f} in the \texttt{WHERE} clause allowed string substitution in Java to specify which source file and cutoff to use. 
 I used the Neo4j Java API to call this query from Eclipse (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/data_mining_Neo4j_v2_3_2/src/ConstructNetwork50M.java}{ConstructNetwork50M.java}), and count the number of nodes added to the database. 
-After my script worked well, I added command line arguments and saved the script to a Jar to be run on a remote machine with $\sim$ 65 GB of memory.
+The time to build the network, and network statistics such as the number of nodes, number of edges, and graph density were reported to standard out.
+After my script worked well, I added command line arguments and saved the script to a JAR to be run on a remote machine with $\sim$ 65 GB of memory.
 
-I made a second Jar (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/data_mining_Neo4j_v2_3_2/src/ConnectedComponentsFinder50M.java}{ConnectedComponentsFinder50M.java}) that runs \href{https://github.com/besil/Neo4jSNA}{Neo4jSNA}'s \footnote{\url{https://github.com/besil/Neo4jSNA}} connected components algorithm.
+I made a second JAR (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/data_mining_Neo4j_v2_3_2/src/ConnectedComponentsFinder50M.java}{ConnectedComponentsFinder50M.java}) that runs \href{https://github.com/besil/Neo4jSNA}{Neo4jSNA}'s \footnote{\url{https://github.com/besil/Neo4jSNA}} connected components algorithm.
 Neo4jSNA was most recently updated for Neo4j 2.3.2, which is much older than the current version of Neo4j, which is 3.0.7. 
 Even the latest 2-series version of Neo4j, 2.3.7, is not compatible with Neo4jSNA, but the JARs for 2.3.2 was found via a link from the Chocolatey package manager.
 The connected components algorithm labeled the nodes in my Neo4j database with the corresponding connected components identification number.
 The labels enumerated by iterating over notes using the Java API.
-These jars were each called by Python (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{database\_comparisons.py} and the corresponding \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/jupyter/build_graphs_and_find_connected_components_50M.ipynb}{ipython notebook}).
+The connected components run time, and key statistics about the connected components were printed to standard out. 
 
-
-Python objects to represented information at each level of the analysis.  
+Both jars were called from a wrapper in Python (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{database\_comparisons.py} and the corresponding \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/jupyter/build_graphs_and_find_connected_components_50M.ipynb}{ipython notebook}).
+Other python objects held information pertinent for each level of the analysis.  
 The \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{Database} class could submit jobs to create single databases and parse statistics about the product from Java's standard output.
 The \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{DatabaseComparison} class contained many database objects, and included many cross-database plotting methods.
 Database objects each contained a \texttt{connected\_components} attribute, which was an instance of my \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/connected_component.py}{ConnectedComponentsDB} class.
@@ -182,7 +187,6 @@ Databases with a cutoff of abs(partial correlation) $>$ 0.04 had few nodes and e
 Database construction times scaled with the number of edges (Figure \ref{fig:build_times}).  
 No database took more than 50 minutes to build.
 
-The largest resulting database was also much more compa
 \begin{figure}[H]
     \captionsetup{width=0.6\textwidth}
     \centering
@@ -224,6 +228,7 @@ For moderate cutoff values, the number of distinct connected components peaks.
 
 Deeper analysis of the database corresponding to partial correlation cutoff = 0.02 is shown in Figures \ref{fig:dist0-02}, \ref{fig:heatmap}.
 In addition to having an interesting quantity of connected components containing multiple species, this cutoff also corresponds to a reasonable cutoff for multiple hypothesis testing. 
+For these reasons, I inspected the connected components results for this dataset in greater depth.
 
 \begin{figure}[H]
     \captionsetup{width=0.6\textwidth}
@@ -246,21 +251,21 @@ The distribution of source organisms was explored in Figure \ref{fig:heatmap}.
     \label{fig:heatmap}
 \end{figure}
 
-Figure \ref{fig:heatmap} shows the contributions of each organism to the connected components found for the database made from cutoff $= 0.02$.
-The left-most connected component (\#38) is a cluster containing onmy Methylobacter, a dominant organism in the original samples. 
+%Figure \ref{fig:heatmap} shows the contributions of each organism to the connected components found for the database made from cutoff $= 0.02$.
+The left-most connected component in Figure \ref{fig:heatmap}, (\#38), is a cluster containing only Methylobacter, a dominant organism in the original samples. 
 The next connected component is the one with 25 different species. 
 Each of these connected components was explored in the Neo4j browser; they can easily be picked out using the query
 \texttt{MATCH (n) where n.ConnectedComponents=0 RETURN n}.  
-Any connected component number can be substituted for the \texttt{0} to display only the nodes in that connected component. 
+Different connected components can be viewed in the browser by substituting a different number for the \texttt{0}. 
 More sophisticated queries are also possible. 
 For example, %\texttt{MATCH (n)<- [e \{cross_species:'True'\}] -> (m) WHERE n.gene\_product =~'.*transport.*' AND e.pcor\_abs > 0.045 RETURN n, m}
 \begin{verbatim} 
-MATCH (n)<- [e \{cross_species:'True'\}] -> (m) 
-    WHERE n.gene\_product =~'.*transport.*' 
-        AND e.pcor\_abs > 0.045 
+MATCH (n)<- [e {cross_species:'True'}] -> (m) 
+    WHERE n.gene_product =~'.*transport.*' 
+        AND e.pcor_abs > 0.045 
     RETURN n, m \end{verbatim}
 demonstrates restriction to cross-species edges where the first node's gene product contains the substring "transport" and the partial correlation magnitude is above 0.045.
-Data exploration so far revealed a mixture of genes to be expected, such as genes involved in single-carbon compound metabolism, as well as more surprising genes. 
+Data exploration so far revealed a mixture of unsurprising genes (such as genes involved in single-carbon compound metabolism), as well as more surprising genes that will be followed up with literature searches. 
 
 \section{Future work}
 
@@ -272,23 +277,24 @@ Such ``between'' edges can be found by looking for edges that are often used in 
 
 Future work will also be done on a larger partial correlation matrix, including up to 5-10x more species.  
 This motivates more efficient storage of input information for Neo4j. 
-My text-rich input tsv file used 11.5GB input file was represented by a mere 0.18 GB Neo4j database.
-This is due to the fact that information about each node was stored in each row it appeared;  descriptors like the parent organism and the gene product it encodes is duplicated thousands of times.
+My text-rich input tsv file was 11.5GB, but occupied only 0.18 GB  once in the Neo4j database.
+This is due to the repetitive nature of my edge-oriented input files. 
+Descriptors like the parent organism and the gene product for a particular node was repeated each time that node appeared.
 These redundancies should be avoided when the network grows in size. 
 
-In the next iteration of this project, nodes will be kept separately from edges.
+For the next iteration of this project, nodes will be kept separately from edges.
 Nodes will be entered first, using only unique node IDs.
 Edges will be added next by matching on the unique node IDs and adding only the partial correlation value and a \texttt{T} or \texttt{F} label indicating whether it is cross-species.
 After that scaffold is prepared, I will iterate over the nodes and add information about each node.  
-This may take longer to query but prevents needing to prepare such large tsv files, which Pandas was already slow on for my current database size. 
+This may increase the database build times but prevents needing to prepare such large tsv files, which Pandas was already slow to produce for this 50-million edge network.
 
 It is also worth considering a different schema for the database.
 The current version's nodes are all of the same type, namely gene.  
-The edges are all of the same type as well. 
+Consequently, nodes in the Neo4j browser cannot be colored by organism type, as Neo4j can only color by node type and not property value. 
+The edges are all of the same type as well, preventing coloring by the sign or magnitude of the partial correlation for that edge. 
 A different strategy is to make the node type a name that represents the different species represented in the dataset.
-This would allow coloring nodes by organism type, which would accelerate exploratory data analysis. 
-Currently node properties cannot be used to specify node colors in the Neo4j browser. 
-
+Edges could also have two types indicating positive or negative partial correlations. 
+This would allow coloring nodes by organism type, which would accelerate downstream exploratory data analysis. 
 
 \section{Conclusion}
 This project was a pilot study for mining interactions between different species in a cultured version of a natural environment.
