@@ -147,16 +147,17 @@ The following \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/data_
 The \texttt{MERGE} operator ensures the pattern exists; if it does not find a piece of the pattern, it adds the corresponding nodes and edges. 
 The \texttt{\%s} at the top and \texttt{\%f} in the \texttt{WHERE} clause allowed string substitution in Java to specify which source file and cutoff to use. 
 I used the Neo4j Java API to call this query from Eclipse (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/data_mining_Neo4j_v2_3_2/src/ConstructNetwork50M.java}{ConstructNetwork50M.java}), and count the number of nodes added to the database. 
-After my script worked well, I added command line arguments and saved the script to a Jar to be run on a remote machine with large memory.
+After my script worked well, I added command line arguments and saved the script to a Jar to be run on a remote machine with $\sim$ 65 GB of memory.
 
 I made a second Jar (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/data_mining_Neo4j_v2_3_2/src/ConnectedComponentsFinder50M.java}{ConnectedComponentsFinder50M.java}) that runs \href{https://github.com/besil/Neo4jSNA}{Neo4jSNA}'s \footnote{\url{https://github.com/besil/Neo4jSNA}} connected components algorithm.
 Neo4jSNA was most recently updated for Neo4j 2.3.2, which is much older than the current version of Neo4j, which is 3.0.7. 
 Even the latest 2-series version of Neo4j, 2.3.7, is not compatible with Neo4jSNA, but the JARs for 2.3.2 was found via a link from the Chocolatey package manager.
 The connected components algorithm labeled the nodes in my Neo4j database with the corresponding connected components identification number.
 The labels enumerated by iterating over notes using the Java API.
-
 These jars were each called by Python (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{database\_comparisons.py} and the corresponding \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/jupyter/build_graphs_and_find_connected_components_50M.ipynb}{ipython notebook}).
-I had python objects to represent information at each level of the analysis.  
+
+
+Python objects to represented information at each level of the analysis.  
 The \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{Database} class could submit jobs to create single databases and parse statistics about the product from Java's standard output.
 The \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{DatabaseComparison} class contained many database objects, and included many cross-database plotting methods.
 Database objects each contained a \texttt{connected\_components} attribute, which was an instance of my \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/connected_component.py}{ConnectedComponentsDB} class.
@@ -165,48 +166,134 @@ These Python structures allowed me to explore results across different granulari
 
 \section{Results}  
 
-Queries ran fast. 
+\subsection{Database construction}
+
+Figure \ref{fig:pcor_hist}  shows the distribution of partial correlation values for the partial correlation matrix.  
+Databases with a cutoff of abs(partial correlation) $>$ 0.04 had few nodes and edges. 
 
 \begin{figure}[H]
     \captionsetup{width=0.6\textwidth}
     \centering
     \includegraphics[scale=0.8]{../../figures_curated/161209_hist_of_pcor_values_50_bins.pdf}
     \caption{Distribution of partial correlation values each database was built from.}
-    %\label{fig:ABCD}
+    \label{fig:pcor_hist}
 \end{figure}
+
+Database construction times scaled with the number of edges (Figure \ref{fig:build_times}).  
+No database took more than 50 minutes to build.
+
+The largest resulting database was also much more compa
+\begin{figure}[H]
+    \captionsetup{width=0.6\textwidth}
+    \centering
+    \includegraphics[scale=0.83]{../../figures_curated/161213_db_construction_linear_with_edges.pdf}
+    \caption{Database construction times scaled approximately linear with the number of edges.}
+    \label{fig:build_times}
+\end{figure}
+
+\subsection{Connected components run time}
+
+Queries ran fast (Figure \ref{fig:cc_times}). 
+Even on the largest database (6,400 nodes and 250,000 edges), the connected components algorithm took only 12 seconds. 
+This was a relief, as long algorithm and query wait times were potentially the biggest drawback of choosing Neo4j.
 
 \begin{figure}[H]
     \captionsetup{width=0.6\textwidth}
     \centering
-    \includegraphics[scale=0.55]{../../figures_curated/{161213_heatmap_cutof_0.02}.png}
-    \caption{Distribution of partial correlation values each database was built from.}
-    %\label{fig:ABCD}
+    \includegraphics[scale=0.83]{../../figures_curated/161215_connected_components_run_seconds.pdf}
+    \caption{Fast run times for connected components.}
+    \label{fig:cc_times}
 \end{figure}
 
 
-These will be filtered based on the most essential feature: a mixture of organism types including one methanotroph and one methylotroph.
-If these connected components are very large, I will seek to break them apart by filtering for magnitude of covariance, and look for cliques within. 
-Then I will use techniques in from social network analysis to do community detection. 
+\subsection{Biological analysis of connected components}
 
-I will leverage existing packages when available, and write my own algorithms when necessary. 
+This project has a particular focus on edges that link genes between species. 
+Figure \ref{fig:cross-species_cc} shows the number of cross-species connected components as the partial correlation cutoff is varied. 
+When either the majority of the network is loaded (partial correlation cutoff = 0.005), there is one large connected component.
+When the the majority of the network has been trimmed out (partial correlation cutoff = 0.06), there are just a few small connected components.
+For moderate cutoff values, the number of distinct connected components peaks.
 
+\begin{figure}[H]
+    \captionsetup{width=0.6\textwidth}
+    \centering
+    \includegraphics[scale=0.83]{../../figures_curated/161215_cc_vs_pcor_cutoff.pdf}
+    \caption{Distribution of \# of species in each connected component for the database corresponding to partial correlation cuttoff = 0.02.}
+    \label{fig:cross-species_cc}
+\end{figure}
 
+Deeper analysis of the database corresponding to partial correlation cutoff = 0.02 is shown in Figures \ref{fig:dist0-02}, \ref{fig:heatmap}.
+In addition to having an interesting quantity of connected components containing multiple species, this cutoff also corresponds to a reasonable cutoff for multiple hypothesis testing. 
 
+\begin{figure}[H]
+    \captionsetup{width=0.6\textwidth}
+    \centering
+    \includegraphics[scale=0.8]{../../figures_curated/{161215_hist_species_0.02}.pdf}
+    \caption{Distribution of number of different species in the connected components of the database corresponding to cutoff = 0.02.}
+    \label{fig:dist0-02}
+\end{figure}
+
+As shown in \ref{fig:dist0-02}, about half of the connected components have only genes from one species. 
+This is not surprising given that there are many co-regulated genes in individual species. 
+While most connected components have less than 8 species represented, one connected component contained genes from 25 different species. 
+The distribution of source organisms was explored in Figure \ref{fig:heatmap}.
+
+\begin{figure}[H]
+    \captionsetup{width=0.9\textwidth}
+    \centering
+    \includegraphics[scale=0.55]{../../figures_curated/{161213_heatmap_cutof_0.02}.pdf}
+    \caption{Host genome for genes in each connected component built from edges with partial correlation magnitudes $\geq 0.02$.}
+    \label{fig:heatmap}
+\end{figure}
+
+Figure \ref{fig:heatmap} shows the contributions of each organism to the connected components found for the database made from cutoff $= 0.02$.
+The left-most connected component (\#38) is a cluster containing onmy Methylobacter, a dominant organism in the original samples. 
+The next connected component is the one with 25 different species. 
+Each of these connected components was explored in the Neo4j browser; they can easily be picked out using the query
+\texttt{MATCH (n) where n.ConnectedComponents=0 RETURN n}.  
+Any connected component number can be substituted for the \texttt{0} to display only the nodes in that connected component. 
+More sophisticated queries are also possible. 
+For example, %\texttt{MATCH (n)<- [e \{cross_species:'True'\}] -> (m) WHERE n.gene\_product =~'.*transport.*' AND e.pcor\_abs > 0.045 RETURN n, m}
+\begin{verbatim} 
+MATCH (n)<- [e \{cross_species:'True'\}] -> (m) 
+    WHERE n.gene\_product =~'.*transport.*' 
+        AND e.pcor\_abs > 0.045 
+    RETURN n, m \end{verbatim}
+demonstrates restriction to cross-species edges where the first node's gene product contains the substring "transport" and the partial correlation magnitude is above 0.045.
+Data exploration so far revealed a mixture of genes to be expected, such as genes involved in single-carbon compound metabolism, as well as more surprising genes. 
 
 \section{Future work}
 
-Connected components $\rightarrow$ hubs and cycles. 
-
-Coloring by organism type or partial correlation sign requires making each node a different type; requires more sophisticated database construction. 
-
-
-Third, if I have time, I will try to implement the community detection algorithm described in \cite{girvan2002community}.
+This work provided a foundation for exploration of our lab's partial correlation matrices as graphs using systematic methods.
+Though this study was restricted to identification of connected components, subsequent analyses will use other community detection tools to pick out subgraphs such as hubs and cycles.
+The experience gained here provides a jumping point for implementing other community detection algorithms in Java such as that in \cite{girvan2002community}.
 This algorithm works to find edges that are least central to communities in the graph and removes them.
 Such ``between'' edges can be found by looking for edges that are often used in shortest paths between pairs of nodes.
 
+Future work will also be done on a larger partial correlation matrix, including up to 5-10x more species.  
+This motivates more efficient storage of input information for Neo4j. 
+My text-rich input tsv file used 11.5GB input file was represented by a mere 0.18 GB Neo4j database.
+This is due to the fact that information about each node was stored in each row it appeared;  descriptors like the parent organism and the gene product it encodes is duplicated thousands of times.
+These redundancies should be avoided when the network grows in size. 
+
+In the next iteration of this project, nodes will be kept separately from edges.
+Nodes will be entered first, using only unique node IDs.
+Edges will be added next by matching on the unique node IDs and adding only the partial correlation value and a \texttt{T} or \texttt{F} label indicating whether it is cross-species.
+After that scaffold is prepared, I will iterate over the nodes and add information about each node.  
+This may take longer to query but prevents needing to prepare such large tsv files, which Pandas was already slow on for my current database size. 
+
+It is also worth considering a different schema for the database.
+The current version's nodes are all of the same type, namely gene.  
+The edges are all of the same type as well. 
+A different strategy is to make the node type a name that represents the different species represented in the dataset.
+This would allow coloring nodes by organism type, which would accelerate exploratory data analysis. 
+Currently node properties cannot be used to specify node colors in the Neo4j browser. 
 
 
-%\bibliographystyle{te}
+\section{Conclusion}
+This project was a pilot study for mining interactions between different species in a cultured version of a natural environment.
+The software developed and insights gained during the course of this project will accelerate future work with even larger data sets. 
+A similar analysis will likely become a section in my thesis when I defend in April. 
 
 \bibliographystyle{plain}
 \bibliography{neo4j}
