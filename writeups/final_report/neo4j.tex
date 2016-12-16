@@ -43,7 +43,7 @@
 My lab studies interactions between methane oxidizing bacteria and other microorganisms, using microbe-rich sediment at the bottom of Lake Washington as a model ecosystem. 
 Understanding how these communities oxidize methane would provide insight into a major greenhouse gas mitigation system. 
 When a scoop of Lake Washington sediment is incubated in a bottle with methane as the only carbon source, the population becomes enriched in methane-consuming methanotrophs.
-Non-methanotrophic "methylotrophic" bacteria, which can use single carbon-compounds other than methane, always grow alongside the methanotrophic bacteria.
+Non-methanotrophic ``methylotrophic" bacteria, which can use single carbon-compounds other than methane, always grow alongside the methanotrophic bacteria.
 The composition of methanotrophs and methylotrophs in each sample can vary widely.
 A third group which can only use multi-carbon compounds also appears, further complicating the interactions.
 
@@ -59,7 +59,7 @@ Our lab has gene expression profiles from 83 incubations of Lake Washington sedi
 From these, a partial correlation matrix was previously computed. 
 Such a partial correlation matrix can be represented as a graph and mined to identify sub-graph motifs demonstrating metabolic cooperation between microbes. 
 In particular, identification of hubs and cycles that include genes from two bacteria can be used to discover metabolic cooperation, such as nutrient exchange. 
-All code for this project is at \href{https://github.com/JanetMatsen/Neo4j_meta4}{github.com/JanetMatsen/Neo4j\_meta4}.
+All code for this project is available at \href{https://github.com/JanetMatsen/Neo4j_meta4}{github.com/JanetMatsen/Neo4j\_meta4}.
 
 %This project began by 
 %This project aimed to infer specific metabolic interactions between microbes in these samples using graph algorithms and queries.
@@ -87,10 +87,11 @@ Recent work has applied partial correlation analysis to the ``phyllosphere'' mic
 
 \subsection{Choice of Neo4j}
 
-The partial correlation graph for these 83 samples will be represented in Neo4j, which has a user-friendly query language, Cypher. % TODO: cite
+The partial correlation graph for these 83 samples was represented in Neo4j, which has a user-friendly query language, Cypher. % TODO: cite
 While the queries required to execute this project are straightforward, downstream data analysis and exploration will be greatly accelerated by the ability to perform queries on the graph and display them in Neo4j's browser. 
 In cypher, nodes are represented by parentheses.  
-An example query we may wish to run could be similar to this search for four nodes with specific species and function specifications: \texttt{(organism:A, gene: metabolite X production) $\leftrightarrow$ (organism:A, gene: metabolite X export) $\leftrightarrow$ (organism:B, gene: metabolite X import) $\leftrightarrow$ (organism:B, gene: metabolite X use )}.  
+An example motif we may want to look for could include production, export, import, and consumption of a metabolite: \hfill \\
+\texttt{(organism:A, gene:metabolite X production) $\leftrightarrow$ (organism:A, gene:metabolite X export) $\leftrightarrow$ (organism:B, gene:metabolite X import) $\leftrightarrow$ (organism:B, gene:metabolite X use )}.  
 
 Neo4j does have drawbacks that did not affect this project but should be considered for larger scale projects.
 First, though multiple clients can run in parallel on the same database, Neo4j cannot scale queries across multiple servers.  
@@ -103,9 +104,8 @@ As the results section illustrates, query and algorithm time were not limiting f
 
 \subsection{Graph construction and connected components}
 
-The partial correlation network was modeled in Neo4j, the leading graph database.
-Nodes represent genes, and edges connect genes with statistically significant partial correlation with one another. 
-The nodes are labeled with the species, gene id, and protein name.
+In this Neo4j database, nodes were used to represent genes, and edges connect genes with statistically significant partial correlation with one another. 
+The nodes are labeled with the species, gene id, and gene product.
 Edges are labeled with the significance weight, and sign (positive or negative). 
 Two gene's nodes have an edge with a large positive value when those two genes tend to be highly expressed together throughout our samples, after controlling for other covarying gene's effects. 
 Conversely, large negative edge weights indicate that the corresponding genes tend to be anticorrelated. 
@@ -161,12 +161,12 @@ The connected components algorithm labeled the nodes in my Neo4j database with t
 The labels enumerated by iterating over notes using the Java API.
 The connected components run time, and key statistics about the connected components were printed to standard out. 
 
-Both jars were called from a wrapper in Python (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{database\_comparisons.py} and the corresponding \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/jupyter/build_graphs_and_find_connected_components_50M.ipynb}{ipython notebook}).
+Both jars were called from a wrapper in Python (see \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{database\_comparisons.py} and the corresponding \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/jupyter/build_graphs_and_find_connected_components_50M.ipynb}{ipython notebook}) using the subprocess module.
 Other python objects held information pertinent for each level of the analysis.  
 The \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{Database} class could submit jobs to create single databases and parse statistics about the product from Java's standard output.
 The \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/database_comparisons.py}{DatabaseComparison} class contained many database objects, and included many cross-database plotting methods.
 Database objects each contained a \texttt{connected\_components} attribute, which was an instance of my \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/connected_component.py}{ConnectedComponentsDB} class.
-A single database's ConnectedComponentsDB included one or more \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/connected_component.py}{ConnectedComponent} instances.
+Each ConnectedComponentsDB instance included one or more \href{https://github.com/JanetMatsen/Neo4j_meta4/blob/master/code/connected_component.py}{ConnectedComponent} instances.
 These Python structures allowed me to explore results across different granularities in my jupyter notebook sessions.
 
 \section{Results}  
@@ -174,7 +174,7 @@ These Python structures allowed me to explore results across different granulari
 \subsection{Database construction}
 
 Figure \ref{fig:pcor_hist}  shows the distribution of partial correlation values for the partial correlation matrix.  
-Databases with a cutoff of abs(partial correlation) $>$ 0.04 had few nodes and edges. 
+%Databases with a cutoff of abs(partial correlation) $>$ 0.04 had few nodes only edges with negative partial correlation values.  
 
 \begin{figure}[H]
     \captionsetup{width=0.6\textwidth}
@@ -198,7 +198,7 @@ No database took more than 50 minutes to build.
 \subsection{Connected components run time}
 
 Queries ran fast (Figure \ref{fig:cc_times}). 
-Even on the largest database (6,400 nodes and 250,000 edges), the connected components algorithm took only 12 seconds. 
+Even for the largest database (6,400 nodes and 250,000 edges), the connected components algorithm took only 12 seconds. 
 This was a relief, as long algorithm and query wait times were potentially the biggest drawback of choosing Neo4j.
 
 \begin{figure}[H]
@@ -214,8 +214,10 @@ This was a relief, as long algorithm and query wait times were potentially the b
 
 This project has a particular focus on edges that link genes between species. 
 Figure \ref{fig:cross-species_cc} shows the number of cross-species connected components as the partial correlation cutoff is varied. 
-When either the majority of the network is loaded (partial correlation cutoff = 0.005), there is one large connected component.
-When the the majority of the network has been trimmed out (partial correlation cutoff = 0.06), there are just a few small connected components.
+There are a small number of connected components for particularly low or high cutoff values.  
+%When either the majority of the network is loaded (partial correlation cutoff = 0.005), there is one large connected component.
+With low partial correlation magnitude cutoffs (minimal trimming), the graph has a high density and there is just one large connected component.
+With high cutoff values (e.g. partial correlation cutoff = 0.06), the majority of the network has been trimmed out and only a few small connected components are left.
 For moderate cutoff values, the number of distinct connected components peaks.
 
 \begin{figure}[H]
@@ -227,7 +229,7 @@ For moderate cutoff values, the number of distinct connected components peaks.
 \end{figure}
 
 Deeper analysis of the database corresponding to partial correlation cutoff = 0.02 is shown in Figures \ref{fig:dist0-02}, \ref{fig:heatmap}.
-In addition to having an interesting quantity of connected components containing multiple species, this cutoff also corresponds to a reasonable cutoff for multiple hypothesis testing. 
+In addition to having an interesting quantity of connected components containing multiple species, this cutoff also corresponds with a suitable trimming parameter to correct for multiple hypothesis testing. 
 For these reasons, I inspected the connected components results for this dataset in greater depth.
 
 \begin{figure}[H]
@@ -238,7 +240,7 @@ For these reasons, I inspected the connected components results for this dataset
     \label{fig:dist0-02}
 \end{figure}
 
-As shown in \ref{fig:dist0-02}, about half of the connected components have only genes from one species. 
+As shown in \ref{fig:dist0-02}, about half of the connected components contain genes from a single species. 
 This is not surprising given that there are many co-regulated genes in individual species. 
 While most connected components have less than 8 species represented, one connected component contained genes from 25 different species. 
 The distribution of source organisms was explored in Figure \ref{fig:heatmap}.
@@ -264,17 +266,19 @@ MATCH (n)<- [e {cross_species:'True'}] -> (m)
     WHERE n.gene_product =~'.*transport.*' 
         AND e.pcor_abs > 0.045 
     RETURN n, m \end{verbatim}
-demonstrates restriction to cross-species edges where the first node's gene product contains the substring "transport" and the partial correlation magnitude is above 0.045.
-Data exploration so far revealed a mixture of unsurprising genes (such as genes involved in single-carbon compound metabolism), as well as more surprising genes that will be followed up with literature searches. 
+demonstrates restriction to cross-species edges where the first node's gene product contains the substring``transport" and the partial correlation magnitude is above 0.045.
+Data exploration so far revealed a mixture of expected genes (such as genes involved in single-carbon compound metabolism), as well as more surprising genes that will be followed up with literature searches. 
 
 \section{Future work}
 
+\subsection{Social network detection algorithms}
 This work provided a foundation for exploration of our lab's partial correlation matrices as graphs using systematic methods.
 Though this study was restricted to identification of connected components, subsequent analyses will use other community detection tools to pick out subgraphs such as hubs and cycles.
-The experience gained here provides a jumping point for implementing other community detection algorithms in Java such as that in \cite{girvan2002community}.
-This algorithm works to find edges that are least central to communities in the graph and removes them.
+The experience gained here provides a jumping point for implementing other community detection algorithms in Java.
+One promising algorithm (\cite{girvan2002community}) finds edges that are least central to communities in the graph and removes them.
 Such ``between'' edges can be found by looking for edges that are often used in shortest paths between pairs of nodes.
 
+\subsection{Improve input data and loading strategy}
 Future work will also be done on a larger partial correlation matrix, including up to 5-10x more species.  
 This motivates more efficient storage of input information for Neo4j. 
 My text-rich input tsv file was 11.5GB, but occupied only 0.18 GB  once in the Neo4j database.
@@ -288,9 +292,12 @@ Edges will be added next by matching on the unique node IDs and adding only the 
 After that scaffold is prepared, I will iterate over the nodes and add information about each node.  
 This may increase the database build times but prevents needing to prepare such large tsv files, which Pandas was already slow to produce for this 50-million edge network.
 
-It is also worth considering a different schema for the database.
+\subsection{Alter schema to enhance browser-based data exploration}
+It is also worth considering a different schema for the database that would allow coloring by organism type to increase the speed of data exploration. 
 The current version's nodes are all of the same type, namely gene.  
-Consequently, nodes in the Neo4j browser cannot be colored by organism type, as Neo4j can only color by node type and not property value. 
+While there are labels indicating what species each node corresponds to, Neo4j's browser only allows coloring based on node type, not property values.
+Consequently, all nodes are the same color when I run the browser.  
+%Consequently, nodes in the Neo4j browser cannot be colored by organism type, as Neo4j can only color by node type and not property value. 
 The edges are all of the same type as well, preventing coloring by the sign or magnitude of the partial correlation for that edge. 
 A different strategy is to make the node type a name that represents the different species represented in the dataset.
 Edges could also have two types indicating positive or negative partial correlations. 
