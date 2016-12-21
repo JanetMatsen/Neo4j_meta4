@@ -1,5 +1,5 @@
 date, hours, description
-161215, 5:30 - 
+161215, 4, writiing, revising.  
 161214, 2.5, writing
 161213, 4, writing report.
 161213, 5, heatmap of species in components.  Poster.
